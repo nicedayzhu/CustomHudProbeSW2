@@ -124,6 +124,50 @@ reopen the tool.
 is different from `FileSystem/SearchPaths`, which mounts VPKs for local
 server/client tests.
 
+## Distribute the published resource with AddonsManager
+
+For a production server, use the upstream
+[SwiftlyS2 AddonsManager](https://github.com/SwiftlyS2-Plugins/AddonsManager) to
+download and mount the published Workshop resource rather than relying on the
+local-development VPK installation route. This project's Workshop item is:
+
+```text
+https://steamcommunity.com/sharedfiles/filedetails/?id=3789924061
+```
+
+Install and deploy AddonsManager according to its upstream README. Then open its
+configuration, normally located at:
+
+```text
+<ServerRoot>\game\csgo\addons\swiftlys2\configs\plugins\AddonsManager\config.jsonc
+```
+
+Add this project's Workshop ID to `Main.Addons`, preserving any IDs already in the
+file:
+
+```jsonc
+{
+  "Main": {
+    "Addons": [
+      "3789924061"
+    ]
+  }
+}
+```
+
+Restart or reload AddonsManager after changing its configuration. The upstream
+plugin also exposes these server-console commands:
+
+```text
+sw_downloadaddon 3789924061  // request a download of this Workshop Addon
+sw_searchpath                // list the VPK search paths currently mounted
+```
+
+Use `sw_searchpath` to confirm the resource is mounted before running
+`!chud_spawn`. The AddonsManager workflow is the intended production route; its
+end-to-end delivery should be verified on the target server after the Workshop
+item is published or updated.
+
 ## Test after publishing
 
 1. Connect a clean client subscribed to the Workshop item to the test server.

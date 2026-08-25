@@ -23,6 +23,15 @@
 插件会发布到：
 `<ServerRoot>\game\csgo\addons\swiftlys2\plugins\CustomHudProbeSW2\`。
 
+## 资源分发
+
+HUD 资源已发布至 Steam 创意工坊：
+[Workshop 项目 3789924061](https://steamcommunity.com/sharedfiles/filedetails/?id=3789924061)。
+
+正式服务器的目标分发方式是使用
+[SwiftlyS2 AddonsManager](https://github.com/SwiftlyS2-Plugins/AddonsManager)，由它下载并挂载
+Workshop Addon，使服务器与玩家客户端取得 HUD 资源。配置和验证步骤见下方开发文档。
+
 ## 开发文档
 
 插件部署、创意工坊发布、`gameinfo.gi` 配置、本地测试与排错，请参阅

@@ -114,6 +114,44 @@ gameinfo.gi.swift_custom_game_probe.bak
 `AddonConfig/VpkDirectories` 决定 Workshop Tools 收集哪些文件；它与本地服务器/客户端测试
 时用于挂载 VPK 的 `FileSystem/SearchPaths` 是两件不同的事。
 
+## 通过 AddonsManager 分发已发布资源
+
+生产服务器应使用上游
+[SwiftlyS2 AddonsManager](https://github.com/SwiftlyS2-Plugins/AddonsManager) 下载并挂载已发布的
+Workshop 资源，而不是依赖本地开发用的 VPK 安装方式。本项目的 Workshop 项为：
+
+```text
+https://steamcommunity.com/sharedfiles/filedetails/?id=3789924061
+```
+
+按其上游 README 安装并部署 AddonsManager，然后打开它的配置文件。通常路径为：
+
+```text
+<ServerRoot>\game\csgo\addons\swiftlys2\configs\plugins\AddonsManager\config.jsonc
+```
+
+在 `Main.Addons` 中加入本项目的 Workshop ID，并保留已有 ID：
+
+```jsonc
+{
+  "Main": {
+    "Addons": [
+      "3789924061"
+    ]
+  }
+}
+```
+
+修改配置后重启或重载 AddonsManager。上游插件还提供以下服务器控制台命令：
+
+```text
+sw_downloadaddon 3789924061  // 请求下载本 Workshop Addon
+sw_searchpath                // 列出当前挂载的 VPK 搜索路径
+```
+
+运行 `!chud_spawn` 前使用 `sw_searchpath` 确认资源已挂载。AddonsManager 是目标生产分发方案；
+在 Workshop 项首次发布或更新后，仍应在目标服务器上完成端到端下载与分发验证。
+
 ## 发布后的测试
 
 1. 用订阅了 Workshop 项的干净客户端连接测试服务器。

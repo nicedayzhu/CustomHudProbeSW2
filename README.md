@@ -24,6 +24,16 @@ Install .NET 10 SDK and a SwiftlyS2 runtime compatible with your server, then ru
 The plugin is published to
 `<ServerRoot>\game\csgo\addons\swiftlys2\plugins\CustomHudProbeSW2\`.
 
+## Distribution
+
+The HUD resource is published on the Steam Workshop:
+[Workshop item 3789924061](https://steamcommunity.com/sharedfiles/filedetails/?id=3789924061).
+
+The intended production distribution route is
+[SwiftlyS2 AddonsManager](https://github.com/SwiftlyS2-Plugins/AddonsManager), which
+downloads and mounts the Workshop Addon for the server and its players. Setup and
+verification steps are in the development guide below.
+
 ## Development documentation
 
 See the [English development guide](docs/DEVELOPMENT.md) for plugin deployment,
