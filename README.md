@@ -6,6 +6,10 @@
 `custom_hud_layout` entity. It creates the HUD entity dynamically on a running
 server, with no Hammer workflow or pre-placed map entity.
 
+## In-game preview
+
+![CustomHudProbeSW2 HUD displayed in Counter-Strike 2](assets/custom-hud-probe-in-game.png)
+
 ## What it validates
 
 - `!chud_spawn` creates and displays the HUD probe.

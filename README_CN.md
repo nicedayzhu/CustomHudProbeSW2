@@ -5,6 +5,10 @@
 `CustomHudProbeSW2` 是面向 CS2 实验性 `custom_hud_layout` 实体的 SwiftlyS2 概念验证插件。
 它在运行中的服务器上动态创建 HUD 实体，不需要 Hammer 工作流，也不需要在地图中预先放置实体。
 
+## 游戏内效果
+
+![CustomHudProbeSW2 HUD 在 Counter-Strike 2 中显示](assets/custom-hud-probe-in-game.png)
+
 ## 已验证的能力
 
 - `!chud_spawn`：创建并显示 HUD 探针。
