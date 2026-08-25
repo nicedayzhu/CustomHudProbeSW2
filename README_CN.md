@@ -64,15 +64,53 @@ Workshop Manager 使用的是 CS2 Addon 目录中的已编译结果，不会自�
 
 ### 3. 看不到 `vxml_c` 或 `vcss_c` 时
 
-先关闭 Workshop Manager，再在 `swift_menu_poc` 仓库中运行：
+先关闭 Workshop Manager。它会在启动时读取配置，所以必须在修改后重新打开。默认客户端
+`gameinfo.gi` 路径为：
+
+```text
+F:\Program Files (x86)\Steam\steamapps\common\Counter-Strike Global Offensive\game\csgo\gameinfo.gi
+```
+
+在 `swift_menu_poc` 仓库中运行：
 
 ```powershell
 .\powershell\experiments\enable_custom_game_panorama_vpkdirs.ps1
 ```
 
-脚本会备份客户端 `game\csgo\gameinfo.gi`，并为 Workshop Tools 的
-`AddonConfig/VpkDirectories` 增加 `custom_game` Panorama 目录。完成后重新打开
-Workshop Manager，再重复上一步。
+若 CS2 安装在其他 Steam 库，将实际路径传给 `-GameInfoPath`：
+
+```powershell
+.\powershell\experiments\enable_custom_game_panorama_vpkdirs.ps1 `
+  -GameInfoPath "D:\SteamLibrary\steamapps\common\Counter-Strike Global Offensive\game\csgo\gameinfo.gi"
+```
+
+脚本首次运行会创建同目录备份：
+
+```text
+gameinfo.gi.swift_custom_game_probe.bak
+```
+
+它会在 `AddonConfig` → `VpkDirectories` 中找到已有的这一行：
+
+```text
+"include"       "panorama/images/map_icons"
+```
+
+然后紧跟其后**仅追加缺失项**。下面是简化的修改结果；块中原有的其他 `include` 行会保留：
+
+```text
+"VpkDirectories"
+{
+    // 其他已有的 include 行保持不变。
+    "include"       "panorama/images/map_icons"
+    "include"       "panorama/layout/custom_game"
+    "include"       "panorama/styles/custom_game"
+    "include"       "panorama/scripts/custom_game"
+}
+```
+
+脚本可重复运行：如果三行已存在，它只报告已启用，不会重复添加。若要撤销，关闭 Workshop
+Manager 后将上述 `.bak` 文件恢复为 `gameinfo.gi`，再重新打开工具。
 
 `VpkDirectories` 只决定 Workshop Tools 收集哪些 Addon 内容；它与服务器/客户端本地测试时的
 `FileSystem/SearchPaths` VPK 挂载是两件不同的事。

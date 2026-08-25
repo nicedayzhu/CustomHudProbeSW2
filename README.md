@@ -69,15 +69,55 @@ in this window.
 
 ### 3. If `vxml_c` or `vcss_c` is missing
 
-Close Workshop Manager first. Then, from `swift_menu_poc`, run:
+Close Workshop Manager first. It reads this configuration at launch, so it must be
+reopened after the change. The default client `gameinfo.gi` path is:
+
+```text
+F:\Program Files (x86)\Steam\steamapps\common\Counter-Strike Global Offensive\game\csgo\gameinfo.gi
+```
+
+From `swift_menu_poc`, run:
 
 ```powershell
 .\powershell\experiments\enable_custom_game_panorama_vpkdirs.ps1
 ```
 
-The script backs up the client's `game\csgo\gameinfo.gi` and adds the required
-`custom_game` Panorama directories to Workshop Tools'
-`AddonConfig/VpkDirectories`. Reopen Workshop Manager and try again.
+For a CS2 install in another Steam library, provide the actual path:
+
+```powershell
+.\powershell\experiments\enable_custom_game_panorama_vpkdirs.ps1 `
+  -GameInfoPath "D:\SteamLibrary\steamapps\common\Counter-Strike Global Offensive\game\csgo\gameinfo.gi"
+```
+
+On its first run, the script creates this backup beside the original file:
+
+```text
+gameinfo.gi.swift_custom_game_probe.bak
+```
+
+It locates this existing entry inside `AddonConfig` → `VpkDirectories`:
+
+```text
+"include"       "panorama/images/map_icons"
+```
+
+It then appends **only missing entries** immediately after it. The following is a
+simplified result; all other existing `include` entries remain untouched:
+
+```text
+"VpkDirectories"
+{
+    // Existing entries are unchanged.
+    "include"       "panorama/images/map_icons"
+    "include"       "panorama/layout/custom_game"
+    "include"       "panorama/styles/custom_game"
+    "include"       "panorama/scripts/custom_game"
+}
+```
+
+The script is safe to run again: if the three entries already exist, it reports
+that they are enabled and does not duplicate them. To revert, close Workshop
+Manager, restore the `.bak` file as `gameinfo.gi`, and reopen the tool.
 
 `VpkDirectories` controls which Addon content Workshop Tools collects. It is
 separate from the `FileSystem/SearchPaths` VPK mount used by local server/client
