@@ -2,6 +2,7 @@
 # The deployment ZIP is reproduced from the tracked project sources.
 build/
 obj/
+.codebase-memory/
 
 # Local IDE state
 .vs/
