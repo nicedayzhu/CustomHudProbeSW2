@@ -4,8 +4,8 @@
 
 本文档说明独立 SwiftlyS2 插件及其配套 HUD 资源创意工坊项的技术工作流。
 
-HUD 源文件统一保存在本项目的 `hud/layout` 与 `hud/styles` 中；相邻的
-`swift_menu_poc` 项目仅提供已验证的 CS2 编译与 VPK 打包辅助脚本。
+HUD 源文件与全部 Custom HUD 构建脚本统一保存在本项目：`hud/layout`、
+`hud/styles` 与 `tools/build_hud_resources.ps1`。
 
 ## 架构与职责
 
@@ -23,7 +23,6 @@ HUD 源文件统一保存在本项目的 `hud/layout` 与 `hud/styles` 中；相
 
 - .NET 10 SDK；
 - 与目标服务器兼容的 SwiftlyS2 运行时；
-- 与本仓库并列的 `swift_menu_poc` 仓库。
 
 在仓库根目录构建并部署插件：
 
@@ -41,16 +40,16 @@ HUD 源文件统一保存在本项目的 `hud/layout` 与 `hud/styles` 中；相
 
 ## 构建 HUD 资源包
 
-从本仓库进入相邻的 `swift_menu_poc` 仓库：
+在本项目中运行资源工具：
 
 ```powershell
-Set-Location ..\swift_menu_poc
-.\swift-menu.ps1 -Action CustomHudValidate
-.\swift-menu.ps1 -Action CustomHudBuild
+.\tools\build_hud_resources.ps1 -Action Validate
+.\tools\build_hud_resources.ps1 -Action Build
 ```
 
-这会创建可上传 Addon `swift_custom_hud_layout_probe` 及其本地 VPK。Workshop Manager 使用
-Addon 目录中的已编译输出，不会替你编译原始 Panorama 源文件。
+这会创建可上传 Addon `swift_custom_hud_layout_probe`，并在
+`dist\swift_custom_hud_layout_probe.vpk` 写入本地 VPK。Workshop Manager 使用 Addon
+目录中的已编译输出，不会替你编译原始 Panorama 源文件。
 
 ## 发布到创意工坊
 
@@ -73,23 +72,23 @@ Addon 目录中的已编译输出，不会替你编译原始 Panorama 源文件�
 F:\Program Files (x86)\Steam\steamapps\common\Counter-Strike Global Offensive\game\csgo\gameinfo.gi
 ```
 
-在 `swift_menu_poc` 中运行：
+在本项目中运行：
 
 ```powershell
-.\powershell\experiments\enable_custom_game_panorama_vpkdirs.ps1
+.\tools\enable_workshop_vpk_directories.ps1
 ```
 
 若 CS2 安装在其他 Steam 库，传入实际路径：
 
 ```powershell
-.\powershell\experiments\enable_custom_game_panorama_vpkdirs.ps1 `
+.\tools\enable_workshop_vpk_directories.ps1 `
   -GameInfoPath "D:\SteamLibrary\steamapps\common\Counter-Strike Global Offensive\game\csgo\gameinfo.gi"
 ```
 
 脚本首次运行会在原文件同目录创建备份：
 
 ```text
-gameinfo.gi.swift_custom_game_probe.bak
+gameinfo.gi.swift_custom_hud_layout_probe.vpkdirs.bak
 ```
 
 它会在 `AddonConfig` → `VpkDirectories` 中找到已有的：
@@ -107,7 +106,6 @@ gameinfo.gi.swift_custom_game_probe.bak
     "include"       "panorama/images/map_icons"
     "include"       "panorama/layout/custom_game"
     "include"       "panorama/styles/custom_game"
-    "include"       "panorama/scripts/custom_game"
 }
 ```
 

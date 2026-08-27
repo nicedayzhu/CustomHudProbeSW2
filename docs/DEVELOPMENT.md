@@ -5,9 +5,8 @@
 This guide covers the technical workflow for the standalone SwiftlyS2 plugin and
 the companion HUD-resource Workshop item.
 
-The HUD source files are owned by this project under `hud/layout` and
-`hud/styles`. The sibling `swift_menu_poc` project supplies only the established
-CS2 compiler and VPK build helpers.
+The HUD source files and all Custom HUD build helpers are owned by this project:
+`hud/layout`, `hud/styles`, and `tools/build_hud_resources.ps1`.
 
 ## Architecture and responsibilities
 
@@ -27,7 +26,6 @@ Requirements:
 
 - .NET 10 SDK;
 - SwiftlyS2 runtime compatible with the target server;
-- the companion `swift_menu_poc` repository beside this repository.
 
 Build and deploy the plugin from the repository root:
 
@@ -45,17 +43,16 @@ The script intentionally does not mount a VPK or modify any `gameinfo.gi` file.
 
 ## Build the HUD resource package
 
-From this repository, enter the sibling `swift_menu_poc` repository:
+From this project, run the resource tool:
 
 ```powershell
-Set-Location ..\swift_menu_poc
-.\swift-menu.ps1 -Action CustomHudValidate
-.\swift-menu.ps1 -Action CustomHudBuild
+.\tools\build_hud_resources.ps1 -Action Validate
+.\tools\build_hud_resources.ps1 -Action Build
 ```
 
-This creates the uploadable Addon `swift_custom_hud_layout_probe` and its local
-VPK. Workshop Manager consumes the compiled Addon output; it does not compile raw
-Panorama sources for you.
+This creates the uploadable Addon `swift_custom_hud_layout_probe` and the local
+VPK at `dist\swift_custom_hud_layout_probe.vpk`. Workshop Manager consumes the
+compiled Addon output; it does not compile raw Panorama sources for you.
 
 ## Publish to the Steam Workshop
 
@@ -81,23 +78,23 @@ client configuration file is:
 F:\Program Files (x86)\Steam\steamapps\common\Counter-Strike Global Offensive\game\csgo\gameinfo.gi
 ```
 
-From `swift_menu_poc`, run:
+From this project, run:
 
 ```powershell
-.\powershell\experiments\enable_custom_game_panorama_vpkdirs.ps1
+.\tools\enable_workshop_vpk_directories.ps1
 ```
 
 For a CS2 installation in another Steam library, pass the actual path:
 
 ```powershell
-.\powershell\experiments\enable_custom_game_panorama_vpkdirs.ps1 `
+.\tools\enable_workshop_vpk_directories.ps1 `
   -GameInfoPath "D:\SteamLibrary\steamapps\common\Counter-Strike Global Offensive\game\csgo\gameinfo.gi"
 ```
 
 On its first run, the script creates this backup beside the original file:
 
 ```text
-gameinfo.gi.swift_custom_game_probe.bak
+gameinfo.gi.swift_custom_hud_layout_probe.vpkdirs.bak
 ```
 
 It finds the following existing entry inside `AddonConfig` → `VpkDirectories`:
@@ -116,7 +113,6 @@ all other existing `include` entries remain unchanged:
     "include"       "panorama/images/map_icons"
     "include"       "panorama/layout/custom_game"
     "include"       "panorama/styles/custom_game"
-    "include"       "panorama/scripts/custom_game"
 }
 ```
 
