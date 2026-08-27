@@ -5,6 +5,10 @@
 This guide covers the technical workflow for the standalone SwiftlyS2 plugin and
 the companion HUD-resource Workshop item.
 
+The HUD source files are owned by this project under `hud/layout` and
+`hud/styles`. The sibling `swift_menu_poc` project supplies only the established
+CS2 compiler and VPK build helpers.
+
 ## Architecture and responsibilities
 
 There are two separately deployed artifacts:
@@ -185,5 +189,6 @@ available to both server and client, then preserve the output of
 `custom_hud_layout` is newly introduced and experimental. The local VPK path and
 the Workshop Manager preview are verified, but an actual Workshop upload should be
 tested separately for subscription download, server resource delivery, and future
-CS2 updates. Per-player dialog state and click callbacks additionally require
-SwiftlyS2 bindings that do not exist yet.
+CS2 updates. Per-player dialog state, input capture, and button callbacks use the
+project's build-locked native bridge; after a CS2 update, revalidate its
+`server.dll` signatures before deploying the plugin.

@@ -1,0 +1,88 @@
+.swift-hud-root
+{
+	width: 100%;
+	height: 100%;
+}
+
+#dialog
+{
+	width: 640px;
+	horizontal-align: center;
+	vertical-align: center;
+	flow-children: down;
+	padding: 28px;
+	background-color: #10161de8;
+	border: 1px solid #5db2d1cc;
+	box-shadow: #000000aa 0px 0px 30px 0px;
+	transition-property: opacity;
+	transition-duration: 0.12s;
+	opacity: 1;
+}
+
+#dialog.SwiftHudHidden
+{
+	visibility: collapse;
+	opacity: 0;
+}
+
+#dialog.SwiftHudAccent
+{
+	border: 1px solid #d9aa45ff;
+}
+
+.swift-hud-kicker
+{
+	color: #d9aa45ff;
+	font-size: 14px;
+	font-weight: bold;
+	letter-spacing: 1px;
+	margin-bottom: 8px;
+}
+
+.swift-hud-title
+{
+	color: #f4f7f8ff;
+	font-size: 34px;
+	font-weight: bold;
+	margin-bottom: 12px;
+}
+
+.swift-hud-status
+{
+	color: #a9bfcbff;
+	font-size: 18px;
+	margin-bottom: 24px;
+}
+
+.swift-hud-actions
+{
+	flow-children: right;
+}
+
+.swift-hud-button
+{
+	min-width: 150px;
+	padding: 10px 16px;
+	margin-right: 10px;
+	background-color: #20313ddd;
+	border: 1px solid #78a7ba88;
+	color: #eaf4f7ff;
+	transition-property: background-color, border;
+	transition-duration: 0.1s;
+}
+
+.swift-hud-button:hover
+{
+	background-color: #315061ff;
+	border: 1px solid #96d8f2ff;
+}
+
+.SwiftHudPrimary
+{
+	background-color: #266b8bdd;
+}
+
+.SwiftHudClose
+{
+	background-color: #523039dd;
+}

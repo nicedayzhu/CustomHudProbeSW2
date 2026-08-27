@@ -1,0 +1,23 @@
+<root>
+	<styles>
+		<include src="s2r://panorama/styles/custom_game/swift_menu_custom_hud.vcss_c" />
+	</styles>
+	<Panel class="swift-hud-root">
+		<Panel id="dialog" class="swift-hud-dialog SwiftHudHidden">
+			<Label class="swift-hud-kicker" text="{s:kicker}" />
+			<Label class="swift-hud-title" text="{s:title}" />
+			<Label class="swift-hud-status" text="{s:status}" />
+			<Panel class="swift-hud-actions">
+				<Button id="swift_menu_primary" class="swift-hud-button SwiftHudPrimary">
+					<Label text="{s:primary-action}" />
+				</Button>
+				<Button id="swift_menu_secondary" class="swift-hud-button">
+					<Label text="{s:secondary-action}" />
+				</Button>
+				<Button id="swift_menu_close" class="swift-hud-button SwiftHudClose">
+					<Label text="{s:close-action}" />
+				</Button>
+			</Panel>
+		</Panel>
+	</Panel>
+</root>

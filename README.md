@@ -16,6 +16,9 @@ server, with no Hammer workflow or pre-placed map entity.
 - `!chud_status` reports the entity tracked by the plugin.
 - `!chud_clear` removes the HUD probe.
 - The client resolves and displays the HUD resources delivered by the resource VPK.
+- The native `CustomHudClickedReceiver` routes the three button IDs to the
+  owning player's menu: primary updates its status, secondary applies its accent,
+  and close releases its input capture and collapses the panel.
 
 ## Quick start
 
@@ -45,6 +48,7 @@ Workshop publishing, `gameinfo.gi` configuration, local testing, and troubleshoo
 
 ## Status
 
-The dynamic entity and HUD-resource path are verified. Per-player state, input
-capture, and click callbacks are deferred until SwiftlyS2 exposes bindings for the
-new CS2 schema and messages.
+The dynamic entity, resource path, per-player state, input capture, and native
+click receiver are implemented against the build-locked SwiftlyS2 1.4.6-beta.8 /
+`server.dll` signature contract. A CS2 update requires the bridge signatures to
+be revalidated before the HUD will spawn.
