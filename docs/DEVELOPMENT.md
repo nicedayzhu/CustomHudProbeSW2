@@ -26,6 +26,8 @@ Requirements:
 
 - .NET 10 SDK;
 - SwiftlyS2 runtime compatible with the target server;
+- a CS2 installation containing `game\bin\win64\resourcecompiler.exe`;
+- [VPKEdit CLI](https://github.com/craftablescience/VPKEdit) for VPK packing.
 
 Build and deploy the plugin from the repository root:
 
@@ -40,19 +42,58 @@ It publishes the plugin to:
 ```
 
 The script intentionally does not mount a VPK or modify any `gameinfo.gi` file.
+Reload the plugin in the server console after deployment, or restart the server:
+
+```text
+sw plugins reload CustomHudProbeSW2
+```
 
 ## Build the HUD resource package
 
-From this project, run the resource tool:
+Set paths for the local CS2 installation and VPKEdit executable, then run the
+resource tool:
 
 ```powershell
+$cs2Root = 'F:\Program Files (x86)\Steam\steamapps\common\Counter-Strike Global Offensive'
+$vpkEditCli = 'D:\Tools\VPKEdit\vpkeditcli.exe'
+
 .\tools\build_hud_resources.ps1 -Action Validate
-.\tools\build_hud_resources.ps1 -Action Build
+.\tools\build_hud_resources.ps1 -Action Build -Cs2Root $cs2Root -VpkEditCli $vpkEditCli
 ```
 
 This creates the uploadable Addon `swift_custom_hud_layout_probe` and the local
 VPK at `dist\swift_custom_hud_layout_probe.vpk`. Workshop Manager consumes the
 compiled Addon output; it does not compile raw Panorama sources for you.
+
+`Validate` checks the layout, stylesheet, plugin integration contract, and required
+GameData entries without compiling. `Compile` only runs ResourceCompiler, `Pack`
+only writes the VPK from a compiled Addon, and `Build` runs `Compile` then `Pack`.
+The default `-Cs2Root` and `-VpkEditCli` values are developer-machine paths, so
+pass the paths above on another machine. Use `-AddonName` only when intentionally
+building a differently named Addon.
+
+## Local override development test
+
+This route is useful before publishing to Workshop. It changes only the local CS2
+installation specified by `-Cs2Root`; deploy the server plugin separately as shown
+above. After a successful `Build`, install its VPK:
+
+```powershell
+.\tools\build_hud_resources.ps1 -Action Install -Cs2Root $cs2Root
+```
+
+`Install` copies `dist\swift_custom_hud_layout_probe.vpk` to
+`<Cs2Root>\game\csgo\overrides\` and inserts its VPK search path into
+`<Cs2Root>\game\csgo\gameinfo.gi`. The first install creates this backup:
+
+```text
+gameinfo.gi.swift_custom_hud_layout_probe.bak
+```
+
+Stop the relevant CS2 process before restoring the backup to revert the mount;
+remove the copied VPK as well if it is no longer needed. Restart the affected CS2
+client/server after installing a new override. `-CsgoPath` can be supplied instead
+when the target `game\csgo` directory is not under `-Cs2Root`.
 
 ## Publish to the Steam Workshop
 
@@ -168,13 +209,30 @@ Use `sw_searchpath` to confirm the resource is mounted before running
 end-to-end delivery should be verified on the target server after the Workshop
 item is published or updated.
 
+## In-game command reference
+
+Use these commands in player chat after the plugin has loaded:
+
+| Command | Result |
+| --- | --- |
+| `!chud_spawn` | Creates one dynamic `custom_hud_layout` probe and opens a menu for each connected human player. |
+| `!chud_open` | Reopens and resets the menu for the player who issues it. The probe must already be active. |
+| `!chud_status` | Reports whether the native bridge is ready and whether a probe is active. |
+| `!chud_clear` | Removes the active probe and releases its captured input. |
+
+If `!chud_spawn` reports that the native bridge is unavailable, inspect the server
+log before troubleshooting the resource VPK: the plugin intentionally refuses to
+spawn on an unverified `server.dll` build.
+
 ## Test after publishing
 
 1. Connect a clean client subscribed to the Workshop item to the test server.
 2. Confirm the server has `CustomHudProbeSW2` deployed.
 3. Run `!chud_spawn` and confirm the HUD appears.
-4. Run `!chud_status` and confirm an active entity is reported.
-5. Run `!chud_clear` and confirm the HUD disappears.
+4. Test primary, secondary, and close buttons; use `!chud_open` to reopen the
+   closed menu for the issuing player.
+5. Run `!chud_status` and confirm an active entity is reported.
+6. Run `!chud_clear` and confirm the HUD disappears.
 
 If the entity is created but no HUD appears, first confirm that the resource VPK is
 available to both server and client, then preserve the output of
@@ -187,5 +245,9 @@ the Workshop Manager preview are verified, but an actual Workshop upload should 
 tested separately for subscription download, server resource delivery, and future
 CS2 updates. Per-player dialog state, input capture, and button callbacks resolve
 their build-specific addresses through
-`resources/gamedata/signatures.jsonc`; after a CS2 update, revalidate that file
-against `server.dll` before deploying the plugin.
+`resources/gamedata/signatures.jsonc`. If startup logging or `!chud_status`
+reports that the native bridge is unavailable after a CS2 update, do not use the
+old signatures on a new build. Revalidate all four signatures against that
+server's `server.dll`, update the GameData file, run `-Action Validate`, deploy,
+and reload the plugin. A verified signature-only update does not require changing
+C#.

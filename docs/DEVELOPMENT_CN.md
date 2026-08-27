@@ -23,6 +23,8 @@ HUD 源文件与全部 Custom HUD 构建脚本统一保存在本项目：`hud/la
 
 - .NET 10 SDK；
 - 与目标服务器兼容的 SwiftlyS2 运行时；
+- 含 `game\bin\win64\resourcecompiler.exe` 的 CS2 安装；
+- 用于打包 VPK 的 [VPKEdit CLI](https://github.com/craftablescience/VPKEdit)。
 
 在仓库根目录构建并部署插件：
 
@@ -37,19 +39,53 @@ HUD 源文件与全部 Custom HUD 构建脚本统一保存在本项目：`hud/la
 ```
 
 脚本刻意不会挂载 VPK，也不会修改任何 `gameinfo.gi` 文件。
+部署后在服务器控制台重载插件，或重启服务器：
+
+```text
+sw plugins reload CustomHudProbeSW2
+```
 
 ## 构建 HUD 资源包
 
-在本项目中运行资源工具：
+先按本机设置本地 CS2 与 VPKEdit 可执行文件路径，再运行资源工具：
 
 ```powershell
+$cs2Root = 'F:\Program Files (x86)\Steam\steamapps\common\Counter-Strike Global Offensive'
+$vpkEditCli = 'D:\Tools\VPKEdit\vpkeditcli.exe'
+
 .\tools\build_hud_resources.ps1 -Action Validate
-.\tools\build_hud_resources.ps1 -Action Build
+.\tools\build_hud_resources.ps1 -Action Build -Cs2Root $cs2Root -VpkEditCli $vpkEditCli
 ```
 
 这会创建可上传 Addon `swift_custom_hud_layout_probe`，并在
 `dist\swift_custom_hud_layout_probe.vpk` 写入本地 VPK。Workshop Manager 使用 Addon
 目录中的已编译输出，不会替你编译原始 Panorama 源文件。
+
+`Validate` 仅检查布局、样式、插件集成契约与必需的 GameData 项，不进行编译；`Compile`
+只执行 ResourceCompiler，`Pack` 只从已编译 Addon 写入 VPK，`Build` 依次执行
+`Compile` 与 `Pack`。`-Cs2Root` 与 `-VpkEditCli` 的默认值是开发机路径，其他机器必须
+显式传入上述实际路径。仅在确实需要不同 Addon 名称时才使用 `-AddonName`。
+
+## 本地 override 开发测试
+
+此路径适合在上传 Workshop 前测试。它只修改 `-Cs2Root` 指向的本地 CS2 安装；服务器插件仍须
+按上文单独部署。`Build` 成功后安装其中的 VPK：
+
+```powershell
+.\tools\build_hud_resources.ps1 -Action Install -Cs2Root $cs2Root
+```
+
+`Install` 会将 `dist\swift_custom_hud_layout_probe.vpk` 复制到
+`<Cs2Root>\game\csgo\overrides\`，并在 `<Cs2Root>\game\csgo\gameinfo.gi` 中插入其
+VPK 搜索路径。首次安装会创建备份：
+
+```text
+gameinfo.gi.swift_custom_hud_layout_probe.bak
+```
+
+撤销挂载前先停止相关 CS2 进程，恢复该备份；若不再需要，也应移除复制出的 VPK。安装新 override
+后需重启受影响的 CS2 客户端/服务器。若目标 `game\csgo` 不在 `-Cs2Root` 下，可改传
+`-CsgoPath`。
 
 ## 发布到创意工坊
 
@@ -153,13 +189,28 @@ sw_searchpath                // 列出当前挂载的 VPK 搜索路径
 运行 `!chud_spawn` 前使用 `sw_searchpath` 确认资源已挂载。AddonsManager 是目标生产分发方案；
 在 Workshop 项首次发布或更新后，仍应在目标服务器上完成端到端下载与分发验证。
 
+## 游戏内命令速查
+
+插件加载后，在玩家聊天中使用以下命令：
+
+| 命令 | 结果 |
+| --- | --- |
+| `!chud_spawn` | 创建一个动态 `custom_hud_layout` 探针，并向每位已连接真人玩家打开菜单。 |
+| `!chud_open` | 为发起命令的玩家重新打开并重置菜单；探针必须已激活。 |
+| `!chud_status` | 报告原生桥接层是否就绪，以及探针是否处于活动状态。 |
+| `!chud_clear` | 移除活动探针，并释放已捕获的输入。 |
+
+如果 `!chud_spawn` 提示原生桥接层不可用，先检查服务器日志，而不要先排查资源 VPK：插件会在
+`server.dll` 构建未经验证时拒绝创建 HUD。
+
 ## 发布后的测试
 
 1. 用订阅了 Workshop 项的干净客户端连接测试服务器。
 2. 确认服务器已部署 `CustomHudProbeSW2`。
 3. 输入 `!chud_spawn`，确认 HUD 显示。
-4. 输入 `!chud_status`，确认报告活动实体。
-5. 输入 `!chud_clear`，确认 HUD 消失。
+4. 测试主按钮、次按钮与关闭按钮；对关闭后的菜单输入 `!chud_open`，确认仅为发起命令的玩家重新打开。
+5. 输入 `!chud_status`，确认报告活动实体。
+6. 输入 `!chud_clear`，确认 HUD 消失。
 
 若实体已创建但 HUD 没有显示，先确认资源 VPK 已同时对服务器和客户端可用，然后保留
 `dev_report_info_hud_layout` 的输出用于排错。
@@ -168,5 +219,7 @@ sw_searchpath                // 列出当前挂载的 VPK 搜索路径
 
 `custom_hud_layout` 是新引入的实验性功能。本地 VPK 路径及 Workshop Manager 内容预览已经
 验证，但真实上传后仍应单独验证订阅下载、服务器资源分发和未来 CS2 更新。每玩家对话状态、
-输入捕获与按钮回调通过 `resources/gamedata/signatures.jsonc` 解析构建相关地址；CS2 更新后，
-部署插件前必须重新验证其中的 `server.dll` 特征码。
+输入捕获与按钮回调通过 `resources/gamedata/signatures.jsonc` 解析构建相关地址。若 CS2 更新后，
+启动日志或 `!chud_status` 报告原生桥接层不可用，不要将旧特征码继续用于新版本：应针对该服务器的
+`server.dll` 重新验证全部四个特征码，更新 GameData 文件，运行 `-Action Validate`，再部署并重载
+插件。经验证的纯特征码更新不需要修改 C#。

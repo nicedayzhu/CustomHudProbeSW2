@@ -13,6 +13,7 @@ server, with no Hammer workflow or pre-placed map entity.
 ## What it validates
 
 - `!chud_spawn` creates and displays the HUD probe.
+- `!chud_open` reopens and resets the issuing player's HUD menu.
 - `!chud_status` reports the entity tracked by the plugin.
 - `!chud_clear` removes the HUD probe.
 - The client resolves and displays the HUD resources delivered by the resource VPK.
@@ -29,16 +30,59 @@ The original direction for native Custom HUD button handling was informed by
 its `CS_UM_CustomHudClicked` receiver flow. Thank you to its author for
 publishing that work.
 
-## Quick start
+## Quick start: local override test
 
-Install .NET 10 SDK and a SwiftlyS2 runtime compatible with your server, then run:
+The plugin and HUD resource are separate artifacts. A local test needs both:
+
+- .NET 10 SDK and a SwiftlyS2 runtime compatible with the server;
+- a local CS2 installation containing `resourcecompiler.exe`;
+- [VPKEdit CLI](https://github.com/craftablescience/VPKEdit), used to pack the
+  resource VPK.
+
+From the project root, set the paths for your machine and deploy the plugin:
 
 ```powershell
-.\build_and_deploy.ps1 -ServerRoot F:\csgoserver_win\cs2
+$serverRoot = 'F:\csgoserver_win\cs2'
+$cs2Root = 'F:\Program Files (x86)\Steam\steamapps\common\Counter-Strike Global Offensive'
+$vpkEditCli = 'D:\Tools\VPKEdit\vpkeditcli.exe'
+
+.\build_and_deploy.ps1 -ServerRoot $serverRoot
 ```
 
 The plugin is published to
 `<ServerRoot>\game\csgo\addons\swiftlys2\plugins\CustomHudProbeSW2\`.
+
+Build and mount the local resource override. `Install` requires the VPK produced
+by `Build`:
+
+```powershell
+.\tools\build_hud_resources.ps1 -Action Validate
+.\tools\build_hud_resources.ps1 -Action Build -Cs2Root $cs2Root -VpkEditCli $vpkEditCli
+.\tools\build_hud_resources.ps1 -Action Install -Cs2Root $cs2Root
+```
+
+`Install` copies the VPK to `<Cs2Root>\game\csgo\overrides\` and adds its
+search path to that local installation's `gameinfo.gi`. It creates
+`gameinfo.gi.swift_custom_hud_layout_probe.bak` once, so the mount can be
+reverted by restoring that backup after the relevant CS2 process is stopped.
+
+In the server console, reload the deployed plugin (or restart the server):
+
+```text
+sw plugins reload CustomHudProbeSW2
+```
+
+Then join the test server and use these chat commands:
+
+| Command | Effect |
+| --- | --- |
+| `!chud_spawn` | Creates the probe and opens its menu for connected human players. |
+| `!chud_open` | Reopens and resets the invoking player's menu; the probe must already exist. |
+| `!chud_status` | Reports the bridge and probe entity state. |
+| `!chud_clear` | Removes the probe and releases its input capture. |
+
+Restart the local CS2 client/server after mounting a new override VPK. The local
+override is only for development; use the Workshop route below for production.
 
 ## Distribution
 
@@ -52,8 +96,9 @@ verification steps are in the development guide below.
 
 ## Development documentation
 
-See the [English development guide](docs/DEVELOPMENT.md) for plugin deployment,
-Workshop publishing, `gameinfo.gi` configuration, local testing, and troubleshooting.
+See the [English development guide](docs/DEVELOPMENT.md) for command parameters,
+plugin deployment, Workshop publishing, `gameinfo.gi` configuration, local testing,
+and troubleshooting.
 
 ## Status
 

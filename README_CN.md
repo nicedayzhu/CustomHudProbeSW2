@@ -12,6 +12,7 @@
 ## 已验证的能力
 
 - `!chud_spawn`：创建并显示 HUD 探针。
+- `!chud_open`：重新打开并重置发起命令玩家的 HUD 菜单。
 - `!chud_status`：显示插件当前跟踪的实体。
 - `!chud_clear`：移除 HUD 探针。
 - 客户端能够解析并显示资源 VPK 提供的 HUD 资源。
@@ -24,16 +25,55 @@
 [laper32/PanoramaLayout](https://github.com/laper32/PanoramaLayout)，尤其是其通过
 `CS_UM_CustomHudClicked` 接收点击的流程。感谢作者公开分享这一实现。
 
-## 快速开始
+## 快速开始：本地 override 测试
 
-安装 .NET 10 SDK 和与服务器兼容的 SwiftlyS2 运行时后，在本目录运行：
+插件与 HUD 资源是两个独立产物；本地测试需要两者都就绪：
+
+- .NET 10 SDK 和与服务器兼容的 SwiftlyS2 运行时；
+- 含 `resourcecompiler.exe` 的本地 CS2 安装；
+- 用于打包资源 VPK 的 [VPKEdit CLI](https://github.com/craftablescience/VPKEdit)。
+
+在项目根目录按本机实际路径设置变量，并部署插件：
 
 ```powershell
-.\build_and_deploy.ps1 -ServerRoot F:\csgoserver_win\cs2
+$serverRoot = 'F:\csgoserver_win\cs2'
+$cs2Root = 'F:\Program Files (x86)\Steam\steamapps\common\Counter-Strike Global Offensive'
+$vpkEditCli = 'D:\Tools\VPKEdit\vpkeditcli.exe'
+
+.\build_and_deploy.ps1 -ServerRoot $serverRoot
 ```
 
 插件会发布到：
 `<ServerRoot>\game\csgo\addons\swiftlys2\plugins\CustomHudProbeSW2\`。
+
+构建并挂载本地资源 override。`Install` 依赖 `Build` 生成的 VPK：
+
+```powershell
+.\tools\build_hud_resources.ps1 -Action Validate
+.\tools\build_hud_resources.ps1 -Action Build -Cs2Root $cs2Root -VpkEditCli $vpkEditCli
+.\tools\build_hud_resources.ps1 -Action Install -Cs2Root $cs2Root
+```
+
+`Install` 会将 VPK 复制到 `<Cs2Root>\game\csgo\overrides\`，并在该本地安装的
+`gameinfo.gi` 中加入搜索路径。首次执行会创建
+`gameinfo.gi.swift_custom_hud_layout_probe.bak`，停止相关 CS2 进程后可恢复该备份以撤销挂载。
+
+在服务器控制台重载已部署插件（或重启服务器）：
+
+```text
+sw plugins reload CustomHudProbeSW2
+```
+
+随后连接测试服务器，使用以下聊天命令：
+
+| 命令 | 作用 |
+| --- | --- |
+| `!chud_spawn` | 创建探针，并向当前已连接的真人玩家打开菜单。 |
+| `!chud_open` | 重新打开并重置发起命令玩家的菜单；探针必须已存在。 |
+| `!chud_status` | 报告桥接层与探针实体状态。 |
+| `!chud_clear` | 移除探针并释放输入捕获。 |
+
+挂载新的 override VPK 后，需要重启本地 CS2 客户端/服务器。local override 仅用于开发；生产环境请使用下方的 Workshop 分发方式。
 
 ## 资源分发
 
@@ -46,7 +86,7 @@ Workshop Addon，使服务器与玩家客户端取得 HUD 资源。配置和验�
 
 ## 开发文档
 
-插件部署、创意工坊发布、`gameinfo.gi` 配置、本地测试与排错，请参阅
+命令参数、插件部署、创意工坊发布、`gameinfo.gi` 配置、本地测试与排错，请参阅
 [中文开发文档](docs/DEVELOPMENT_CN.md)。
 
 ## 当前状态
