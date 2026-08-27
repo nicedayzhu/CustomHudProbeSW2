@@ -18,6 +18,12 @@
 - 原生 `CustomHudClickedReceiver` 会将三个按钮 ID 路由到对应玩家的菜单：主按钮更新状态，
   次按钮应用强调样式，关闭按钮释放输入捕获并折叠面板。
 
+## 致谢
+
+原生 Custom HUD 点击处理的最初实现思路参考了
+[laper32/PanoramaLayout](https://github.com/laper32/PanoramaLayout)，尤其是其通过
+`CS_UM_CustomHudClicked` 接收点击的流程。感谢作者公开分享这一实现。
+
 ## 快速开始
 
 安装 .NET 10 SDK 和与服务器兼容的 SwiftlyS2 运行时后，在本目录运行：

@@ -22,6 +22,13 @@ server, with no Hammer workflow or pre-placed map entity.
 - The native bridge resolves its four build-specific addresses through the
   plugin's `resources/gamedata/signatures.jsonc`, not hard-coded C# patterns.
 
+## Acknowledgements
+
+The original direction for native Custom HUD button handling was informed by
+[laper32/PanoramaLayout](https://github.com/laper32/PanoramaLayout), especially
+its `CS_UM_CustomHudClicked` receiver flow. Thank you to its author for
+publishing that work.
+
 ## Quick start
 
 Install .NET 10 SDK and a SwiftlyS2 runtime compatible with your server, then run:
