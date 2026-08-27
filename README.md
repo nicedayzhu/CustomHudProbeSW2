@@ -19,6 +19,8 @@ server, with no Hammer workflow or pre-placed map entity.
 - The native `CustomHudClickedReceiver` routes the three button IDs to the
   owning player's menu: primary updates its status, secondary applies its accent,
   and close releases its input capture and collapses the panel.
+- The native bridge resolves its four build-specific addresses through the
+  plugin's `resources/gamedata/signatures.jsonc`, not hard-coded C# patterns.
 
 ## Quick start
 
@@ -49,6 +51,6 @@ Workshop publishing, `gameinfo.gi` configuration, local testing, and troubleshoo
 ## Status
 
 The dynamic entity, resource path, per-player state, input capture, and native
-click receiver are implemented against the build-locked SwiftlyS2 1.4.6-beta.8 /
-`server.dll` signature contract. A CS2 update requires the bridge signatures to
-be revalidated before the HUD will spawn.
+click receiver are implemented against SwiftlyS2 1.4.6-beta.8. A CS2 update
+requires the plugin GameData signatures to be revalidated before the HUD will
+spawn; a verified signature-only update does not require changing C#.

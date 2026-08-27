@@ -16,6 +16,7 @@ $layoutPath = Join-Path $sourceRoot "layout\swift_menu_custom_hud.xml"
 $stylePath = Join-Path $sourceRoot "styles\swift_menu_custom_hud.css"
 $pluginPath = Join-Path $projectRoot "src\CustomHudProbeSW2.cs"
 $bridgePath = Join-Path $projectRoot "src\CustomHudNative.cs"
+$gameDataPath = Join-Path $projectRoot "resources\gamedata\signatures.jsonc"
 $distRoot = Join-Path $projectRoot "dist"
 $outVpk = Join-Path $distRoot "$AddonName.vpk"
 
@@ -80,7 +81,7 @@ function Write-TextNoBom {
 }
 
 function Test-HudSources {
-    foreach ($path in @($layoutPath, $stylePath, $pluginPath, $bridgePath)) {
+    foreach ($path in @($layoutPath, $stylePath, $pluginPath, $bridgePath, $gameDataPath)) {
         Assert-FileExists -Path $path -Message "Required Custom HUD source is missing: $path"
     }
 
@@ -130,9 +131,22 @@ function Test-HudSources {
 
     $pluginSource = Get-Content -Raw -LiteralPath $pluginPath
     $bridgeSource = Get-Content -Raw -LiteralPath $bridgePath
-    foreach ($api in @("SetDialogVariableStringForPlayer", "SetHasClassForPlayer", "SetInputCaptureEnabled", "HookCustomHudClicks", "CustomHudClickedReceiverSignature")) {
+    foreach ($api in @("SetDialogVariableStringForPlayer", "SetHasClassForPlayer", "SetInputCaptureEnabled", "HookCustomHudClicks", "IGameDataService", "TryGetSignature")) {
         if ($bridgeSource -notmatch [regex]::Escape($api)) {
             throw "Custom HUD native bridge is missing: $api"
+        }
+    }
+    if ($bridgeSource -match [regex]::Escape("GetAddressBySignature")) {
+        throw "Custom HUD bridge must resolve signatures through SwiftlyS2 GameData, not IMemoryService."
+    }
+    $gameDataSource = Get-Content -Raw -LiteralPath $gameDataPath
+    foreach ($signatureName in @(
+        "CustomHudProbeSW2::SetDialogVariableStringForPlayer",
+        "CustomHudProbeSW2::SetHasClassForPlayer",
+        "CustomHudProbeSW2::SetInputCaptureEnabled",
+        "CustomHudProbeSW2::CustomHudClickedReceiver")) {
+        if ($gameDataSource -notmatch [regex]::Escape($signatureName)) {
+            throw "Custom HUD GameData is missing signature: $signatureName"
         }
     }
     foreach ($api in @("OnNativeCustomHudClicked", "ProcessNativeCustomHudClick", "CreateEntityByDesignerName<CCSCustomHudLayout>")) {

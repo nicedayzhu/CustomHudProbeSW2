@@ -35,13 +35,12 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
     {
         try
         {
-            _nativeHud = CustomHudNativeBridge.Create(Core.Memory);
+            _nativeHud = CustomHudNativeBridge.Create(Core.GameData, Core.Memory);
             _nativeHud.HookCustomHudClicks(OnNativeCustomHudClicked, exception =>
                 Logger.LogError(exception, "[CustomHudProbeSW2] Custom HUD click bridge callback failed."));
 
             Logger.LogInformation(
-                "[CustomHudProbeSW2] Native CustomHudClicked receiver and state setters are ready for server.dll build {BuildHash} (hotReload={HotReload}). Use !chud_spawn.",
-                CustomHudNativeBridge.ServerBuildSha256,
+                "[CustomHudProbeSW2] Native CustomHudClicked receiver and state setters are ready from plugin GameData (hotReload={HotReload}). Use !chud_spawn.",
                 hotReload);
         }
         catch (Exception exception)

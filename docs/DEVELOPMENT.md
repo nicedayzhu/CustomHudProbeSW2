@@ -185,6 +185,7 @@ available to both server and client, then preserve the output of
 `custom_hud_layout` is newly introduced and experimental. The local VPK path and
 the Workshop Manager preview are verified, but an actual Workshop upload should be
 tested separately for subscription download, server resource delivery, and future
-CS2 updates. Per-player dialog state, input capture, and button callbacks use the
-project's build-locked native bridge; after a CS2 update, revalidate its
-`server.dll` signatures before deploying the plugin.
+CS2 updates. Per-player dialog state, input capture, and button callbacks resolve
+their build-specific addresses through
+`resources/gamedata/signatures.jsonc`; after a CS2 update, revalidate that file
+against `server.dll` before deploying the plugin.

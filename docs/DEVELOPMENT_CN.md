@@ -168,5 +168,5 @@ sw_searchpath                // 列出当前挂载的 VPK 搜索路径
 
 `custom_hud_layout` 是新引入的实验性功能。本地 VPK 路径及 Workshop Manager 内容预览已经
 验证，但真实上传后仍应单独验证订阅下载、服务器资源分发和未来 CS2 更新。每玩家对话状态、
-输入捕获与按钮回调使用项目中锁定构建版本的原生桥接；CS2 更新后，部署插件前必须重新验证
-其 `server.dll` 特征码。
+输入捕获与按钮回调通过 `resources/gamedata/signatures.jsonc` 解析构建相关地址；CS2 更新后，
+部署插件前必须重新验证其中的 `server.dll` 特征码。
