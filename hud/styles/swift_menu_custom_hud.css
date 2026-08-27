@@ -6,14 +6,20 @@
 
 #dialog
 {
-	width: 640px;
+	width: 560px;
 	horizontal-align: center;
 	vertical-align: center;
 	flow-children: down;
-	padding: 28px;
-	background-color: #10161de8;
-	border: 1px solid #5db2d1cc;
-	box-shadow: #000000aa 0px 0px 30px 0px;
+	padding: 20px 22px 22px;
+	background-color: gradient(linear, 75% 100%, 0% 0%, from(rgba(8, 14, 20, 0.92)), to(rgba(14, 22, 30, 0.92)));
+	background-image: url("s2r://panorama/images/backgrounds/bluedots_large_png.vtex");
+	background-size: 360px 360px;
+	background-img-opacity: 0.018;
+	world-blur: gaussian(3, 3, 3);
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	border-left: 3px solid #e4ae39;
+	border-radius: 3px;
+	box-shadow: rgba(0, 0, 0, 0.72) 0px 0px 28px 0px;
 	transition-property: opacity;
 	transition-duration: 0.12s;
 	opacity: 1;
@@ -27,62 +33,199 @@
 
 #dialog.SwiftHudAccent
 {
-	border: 1px solid #d9aa45ff;
+	border-color: rgba(130, 215, 255, 0.55);
+	border-left-color: #82d7ff;
+}
+
+.swift-hud-header
+{
+	width: 100%;
+	flow-children: right;
+	margin-bottom: 8px;
+}
+
+.swift-hud-title-block
+{
+	width: fill-parent-flow(1);
+	flow-children: down;
 }
 
 .swift-hud-kicker
 {
-	color: #d9aa45ff;
-	font-size: 14px;
+	font-family: Stratum2 Condensed, 'Arial Unicode MS';
+	color: #e4ae39;
+	font-size: 13px;
 	font-weight: bold;
 	letter-spacing: 1px;
-	margin-bottom: 8px;
+	margin-bottom: 1px;
+	text-transform: uppercase;
 }
 
 .swift-hud-title
 {
-	color: #f4f7f8ff;
-	font-size: 34px;
+	font-family: Stratum2, 'Arial Unicode MS';
+	color: #f3f6fb;
+	font-size: 30px;
 	font-weight: bold;
+	text-shadow: 1px 1px 2px 2 rgba(0, 0, 0, 0.65);
+}
+
+.swift-hud-header-mark
+{
+	width: 40px;
+	height: 32px;
+	margin-top: 3px;
+	background-color: rgba(130, 215, 255, 0.035);
+	border: 1px solid rgba(130, 215, 255, 0.14);
+	border-radius: 2px;
+}
+
+.swift-hud-header-mark Label
+{
+	font-family: Stratum2 Condensed, 'Arial Unicode MS';
+	font-size: 16px;
+	font-weight: bold;
+	color: #82d7ff;
+	horizontal-align: center;
+	vertical-align: center;
+	text-align: center;
+}
+
+.swift-hud-divider
+{
+	width: 100%;
+	height: 1px;
 	margin-bottom: 12px;
+	background-color: gradient(linear, 0% 0%, 100% 0%, from(rgba(228, 174, 57, 0.65)), color-stop(0.55, rgba(50, 129, 172, 0.28)), to(rgba(50, 129, 172, 0)));
+}
+
+.swift-hud-status-row
+{
+	width: 100%;
+	flow-children: right;
+	margin-bottom: 14px;
+}
+
+.swift-hud-status-marker
+{
+	width: 3px;
+	height: 16px;
+	margin-top: 2px;
+	margin-right: 9px;
+	background-color: #82d7ff;
 }
 
 .swift-hud-status
 {
-	color: #a9bfcbff;
-	font-size: 18px;
-	margin-bottom: 24px;
+	width: fill-parent-flow(1);
+	font-family: Stratum2, 'Arial Unicode MS';
+	color: #8899aa;
+	font-size: 15px;
 }
 
 .swift-hud-actions
 {
-	flow-children: right;
+	width: 100%;
+	flow-children: down;
 }
 
 .swift-hud-button
 {
-	min-width: 150px;
-	padding: 10px 16px;
-	margin-right: 10px;
-	background-color: #20313ddd;
-	border: 1px solid #78a7ba88;
-	color: #eaf4f7ff;
-	transition-property: background-color, border;
-	transition-duration: 0.1s;
+	width: 100%;
+	height: 50px;
+	margin-bottom: 7px;
+	flow-children: right;
+	background-color: gradient(linear, 0% 0%, 100% 0%, from(rgba(255, 255, 255, 0.04)), color-stop(0.55, rgba(88, 112, 136, 0.14)), to(rgba(0, 0, 0, 0.22)));
+	border: 1px solid rgba(255, 255, 255, 0.05);
+	border-left: 3px solid rgba(228, 174, 57, 0.55);
+	border-radius: 3px;
+	brightness: 1;
+	transition-property: background-color, border, brightness;
+	transition-duration: 0.0s;
 }
 
 .swift-hud-button:hover
 {
-	background-color: #315061ff;
-	border: 1px solid #96d8f2ff;
+	sound: "UIPanorama.generic_button_rollover";
+	background-color: gradient(linear, 0% 0%, 100% 0%, from(rgba(228, 174, 57, 0.14)), color-stop(0.48, rgba(50, 129, 172, 0.12)), to(rgba(255, 255, 255, 0.025)));
+	border-color: rgba(228, 174, 57, 0.65);
+	border-left-color: #e4ae39;
+	brightness: 1.35;
+	transition-duration: 0.15s;
+}
+
+.swift-hud-button:active
+{
+	sound: "UIPanorama.submenu_select";
+	brightness: 0.95;
 }
 
 .SwiftHudPrimary
 {
-	background-color: #266b8bdd;
+	background-color: gradient(linear, 0% 0%, 100% 0%, from(rgba(228, 174, 57, 0.12)), color-stop(0.55, rgba(50, 129, 172, 0.10)), to(rgba(0, 0, 0, 0.20)));
+	border-left-color: #e4ae39;
 }
 
 .SwiftHudClose
 {
-	background-color: #523039dd;
+	border-left-color: rgba(219, 68, 55, 0.50);
+}
+
+.SwiftHudClose:hover
+{
+	background-color: gradient(linear, 0% 0%, 100% 0%, from(rgba(219, 68, 55, 0.12)), color-stop(0.48, rgba(88, 46, 50, 0.12)), to(rgba(255, 255, 255, 0.025)));
+	border-color: rgba(219, 68, 55, 0.60);
+	border-left-color: #DB4437;
+}
+
+.SwiftHudClose .swift-hud-action-key Label
+{
+	font-size: 14px;
+	color: #8899aa;
+}
+
+.SwiftHudClose:hover .swift-hud-action-key Label
+{
+	color: #DB4437;
+}
+
+.swift-hud-action-key
+{
+	width: 52px;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.22);
+	border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.swift-hud-action-key Label
+{
+	font-family: Stratum2 Condensed, 'Arial Unicode MS';
+	font-size: 20px;
+	font-weight: bold;
+	color: #e4ae39;
+	horizontal-align: center;
+	vertical-align: center;
+	text-align: center;
+}
+
+.swift-hud-action-copy
+{
+	width: fill-parent-flow(1);
+	height: 100%;
+	flow-children: down;
+	padding: 8px 14px 6px;
+}
+
+.swift-hud-action-title
+{
+	font-family: Stratum2, 'Arial Unicode MS';
+	font-size: 18px;
+	font-weight: bold;
+	color: #f3f6fb;
+	vertical-align: center;
+}
+
+.swift-hud-button:hover .swift-hud-action-title
+{
+	color: white;
 }

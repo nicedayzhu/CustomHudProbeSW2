@@ -8,7 +8,7 @@ server, with no Hammer workflow or pre-placed map entity.
 
 ## In-game preview
 
-![CustomHudProbeSW2 HUD displayed in Counter-Strike 2](assets/custom-hud-probe-in-game.png)
+![CustomHudProbeSW2 HUD displayed in Counter-Strike 2](assets/Snipaste_2026-08-27_12-52-37.png)
 
 ## What it validates
 

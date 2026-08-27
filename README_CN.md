@@ -7,7 +7,7 @@
 
 ## 游戏内效果
 
-![CustomHudProbeSW2 HUD 在 Counter-Strike 2 中显示](assets/custom-hud-probe-in-game.png)
+![CustomHudProbeSW2 HUD 在 Counter-Strike 2 中显示](assets/Snipaste_2026-08-27_12-52-37.png)
 
 ## 已验证的能力
 
