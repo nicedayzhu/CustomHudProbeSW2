@@ -4,7 +4,8 @@ param(
     [string]$Cs2Root = "F:\Program Files (x86)\Steam\steamapps\common\Counter-Strike Global Offensive",
     [string]$AddonName = "swift_custom_hud_layout_probe",
     [string]$VpkEditCli = "F:\cs2dev\SkinTools\VPKEdit-Windows-Standalone-msvc-Release\vpkeditcli.exe",
-    [string]$CsgoPath = ""
+    [string]$CsgoPath = "",
+    [string]$ServerRoot = "F:\csgoserver_win\cs2"
 )
 
 $ErrorActionPreference = "Stop"
@@ -13,6 +14,7 @@ Set-StrictMode -Version Latest
 $projectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $sourceRoot = Join-Path $projectRoot "hud"
 $layoutPath = Join-Path $sourceRoot "layout\swift_menu_custom_hud.xml"
+$cardLayoutPath = Join-Path $sourceRoot "layout\cyber_card_custom_hud.xml"
 $stylePath = Join-Path $sourceRoot "styles\swift_menu_custom_hud.css"
 $pluginPath = Join-Path $projectRoot "src\CustomHudProbeSW2.cs"
 $bridgePath = Join-Path $projectRoot "src\CustomHudNative.cs"
@@ -81,11 +83,12 @@ function Write-TextNoBom {
 }
 
 function Test-HudSources {
-    foreach ($path in @($layoutPath, $stylePath, $pluginPath, $bridgePath, $gameDataPath)) {
+    foreach ($path in @($layoutPath, $cardLayoutPath, $stylePath, $pluginPath, $bridgePath, $gameDataPath)) {
         Assert-FileExists -Path $path -Message "Required Custom HUD source is missing: $path"
     }
 
-    [xml]$layout = Get-Content -Raw -LiteralPath $layoutPath
+    [xml]$menuLayout = Get-Content -Raw -LiteralPath $layoutPath
+    [xml]$cardLayout = Get-Content -Raw -LiteralPath $cardLayoutPath
     $allowedAttributes = @{
         "root" = @()
         "styles" = @()
@@ -96,30 +99,74 @@ function Test-HudSources {
         "Button" = @("id", "class")
     }
 
-    foreach ($node in $layout.SelectNodes("//*")) {
-        if (-not $allowedAttributes.ContainsKey($node.Name)) {
-            throw "Custom HUD layout contains disallowed node: $($node.Name)"
-        }
-        foreach ($attribute in $node.Attributes) {
-            if ($allowedAttributes[$node.Name] -notcontains $attribute.Name) {
-                throw "Custom HUD layout contains disallowed attribute '$($attribute.Name)' on <$($node.Name)>"
+    foreach ($layout in @($menuLayout, $cardLayout)) {
+        foreach ($node in $layout.SelectNodes("//*")) {
+            if (-not $allowedAttributes.ContainsKey($node.Name)) {
+                throw "Custom HUD layout contains disallowed node: $($node.Name)"
+            }
+            foreach ($attribute in $node.Attributes) {
+                if ($allowedAttributes[$node.Name] -notcontains $attribute.Name) {
+                    throw "Custom HUD layout contains disallowed attribute '$($attribute.Name)' on <$($node.Name)>"
+                }
             }
         }
+
+        $stylesheet = $layout.SelectSingleNode("/root/styles/include")
+        if (-not $stylesheet -or $stylesheet.GetAttribute("src") -ne "s2r://panorama/styles/custom_game/swift_menu_custom_hud.vcss_c") {
+            throw "Each Custom HUD layout must include the compiled custom_game stylesheet."
+        }
     }
 
-    $stylesheet = $layout.SelectSingleNode("/root/styles/include")
-    if (-not $stylesheet -or $stylesheet.GetAttribute("src") -ne "s2r://panorama/styles/custom_game/swift_menu_custom_hud.vcss_c") {
-        throw "Custom HUD layout must include the compiled custom_game stylesheet."
+    if (-not $menuLayout.SelectSingleNode("//Panel[@id='dialog']")) {
+        throw "Menu Custom HUD layout is missing the dialog panel."
     }
-    if (-not $layout.SelectSingleNode("//Panel[@id='dialog']")) {
-        throw "Custom HUD layout is missing the native-state dialog panel."
+    if (-not $cardLayout.SelectSingleNode("//Panel[@id='card_dialog']")) {
+        throw "Card Custom HUD layout is missing the card_dialog panel."
+    }
+    if ($cardLayout.SelectSingleNode("/root/scripts")) {
+        throw "CCSCustomHudLayout validation disallows a scripts node."
     }
 
-    $buttonIds = @($layout.SelectNodes("//Button") | ForEach-Object { $_.GetAttribute("id") })
+    $buttonIds = @($menuLayout.SelectNodes("//Button") | ForEach-Object { $_.GetAttribute("id") })
     foreach ($buttonId in @("swift_menu_primary", "swift_menu_secondary", "swift_menu_close")) {
         if ($buttonIds -notcontains $buttonId) {
             throw "Custom HUD layout is missing button id: $buttonId"
         }
+    }
+    if ($cardLayout.SelectNodes("//Button").Count -ne 0) {
+        throw "Standalone card layout must not contain menu Buttons."
+    }
+    $trackerCount = $cardLayout.SelectNodes("//Panel[contains(concat(' ', normalize-space(@class), ' '), ' cyber-tracker ')]").Count
+    if ($trackerCount -ne 25) {
+        throw "Standalone card layout must contain exactly 25 hover trackers; found $trackerCount."
+    }
+    $sensorCount = $cardLayout.SelectNodes("//Panel[contains(concat(' ', normalize-space(@class), ' '), ' cyber-hover-sensor ')]").Count
+    if ($sensorCount -ne 25) {
+        throw "Standalone card layout must contain exactly 25 hover sensors; found $sensorCount."
+    }
+    for ($trackerIndex = 1; $trackerIndex -le 25; $trackerIndex++) {
+        $tracker = $cardLayout.SelectSingleNode("//Panel[@id='CyberTracker$trackerIndex']")
+        if (-not $tracker) {
+            throw "Standalone card layout is missing CyberTracker$trackerIndex."
+        }
+        $directSensors = $tracker.SelectNodes("./Panel[contains(concat(' ', normalize-space(@class), ' '), ' cyber-hover-sensor ')]").Count
+        if ($directSensors -ne 1) {
+            throw "CyberTracker$trackerIndex must own exactly one hover sensor."
+        }
+        if ($trackerIndex -lt 25 -and -not $tracker.SelectSingleNode("./Panel[@id='CyberTracker$($trackerIndex + 1)']")) {
+            throw "CyberTracker$trackerIndex must directly contain the next tracker in the shared-card chain."
+        }
+        if ($trackerIndex -eq 25 -and -not $tracker.SelectSingleNode("./Panel[@id='CyberCard']")) {
+            throw "CyberTracker25 must directly contain the shared CyberCard panel."
+        }
+    }
+    $cyberCard = $cardLayout.SelectSingleNode("//Panel[@id='CyberCard']")
+    if ($cardLayout.SelectNodes("//Panel[@id='CyberCard']").Count -ne 1 -or -not $cyberCard) {
+        throw "Standalone card layout must contain exactly one shared CyberCard panel."
+    }
+    $cardTrackerAncestors = $cyberCard.SelectNodes("ancestor::Panel[contains(concat(' ', normalize-space(@class), ' '), ' cyber-tracker ')]").Count
+    if ($cardTrackerAncestors -ne 25) {
+        throw "The shared CyberCard must be a descendant of all 25 trackers; found $cardTrackerAncestors ancestors."
     }
 
     $layoutSource = Get-Content -Raw -LiteralPath $layoutPath
@@ -163,6 +210,26 @@ function Test-HudSources {
     $styleSource = Get-Content -Raw -LiteralPath $stylePath
     if ($styleSource -notmatch [regex]::Escape("#dialog.SwiftHudHidden") -or $styleSource -notmatch [regex]::Escape("visibility: collapse")) {
         throw "Custom HUD stylesheet does not provide the non-interactive hidden state."
+    }
+    if ($styleSource.Contains("~")) {
+        throw "Custom HUD stylesheet must not use the unsupported Panorama sibling combinator '~'."
+    }
+    if ($styleSource -match [regex]::Escape("CyberHovered")) {
+        throw "Custom HUD stylesheet must not depend on script-applied CyberHovered classes."
+    }
+    if ($styleSource -match [regex]::Escape("cyber-card-hover")) {
+        throw "Custom HUD stylesheet must not switch between duplicated hover-card trees."
+    }
+    if ($styleSource -notmatch [regex]::Escape(".cyber-tracker:hover #CyberCard")) {
+        throw "Custom HUD stylesheet is missing the shared-card hover selector."
+    }
+    foreach ($trackerIndex in 1..25) {
+        if ($styleSource -notmatch [regex]::Escape("#CyberTracker${trackerIndex}:hover #CyberCard")) {
+            throw "Custom HUD stylesheet is missing the tilt selector for CyberTracker$trackerIndex."
+        }
+    }
+    if ($styleSource -match "translateZ|scale3d") {
+        throw "Custom HUD card tilt must match the reference transform without added translateZ or scale3d motion."
     }
 
     Write-Host "Custom HUD source validation passed."
@@ -208,6 +275,7 @@ function Compile-HudResources {
 }
 '@
     Write-TextNoBom -Path (Join-Path $contentLayoutDir "swift_menu_custom_hud.vxml") -Value (Get-Content -Raw -LiteralPath $layoutPath)
+    Write-TextNoBom -Path (Join-Path $contentLayoutDir "cyber_card_custom_hud.vxml") -Value (Get-Content -Raw -LiteralPath $cardLayoutPath)
     Write-TextNoBom -Path (Join-Path $contentStyleDir "swift_menu_custom_hud.vcss") -Value (Get-Content -Raw -LiteralPath $stylePath)
     Set-Content -LiteralPath (Join-Path $paths.ContentAddon "addoninfo.txt") -Encoding ASCII -Value @'
 <!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
@@ -221,13 +289,14 @@ function Compile-HudResources {
 }
 '@
 
-    & $paths.ResourceCompiler -game $paths.GameDir -i (Join-Path $contentStyleDir "swift_menu_custom_hud.vcss") -i (Join-Path $contentLayoutDir "swift_menu_custom_hud.vxml") -f -nop4 -v
+    & $paths.ResourceCompiler -game $paths.GameDir -i (Join-Path $contentStyleDir "swift_menu_custom_hud.vcss") -i (Join-Path $contentLayoutDir "swift_menu_custom_hud.vxml") -i (Join-Path $contentLayoutDir "cyber_card_custom_hud.vxml") -f -nop4 -v
     if ($LASTEXITCODE -ne 0) {
         throw "resourcecompiler failed with exit code $LASTEXITCODE"
     }
 
     $expectedOutputs = @(
         (Join-Path $gameLayoutDir "swift_menu_custom_hud.vxml_c"),
+        (Join-Path $gameLayoutDir "cyber_card_custom_hud.vxml_c"),
         (Join-Path $gameStyleDir "swift_menu_custom_hud.vcss_c")
     )
     foreach ($output in $expectedOutputs) {
@@ -252,7 +321,7 @@ function Pack-HudVpk {
     try {
         New-Item -ItemType Directory -Force -Path $stageRoot | Out-Null
         Copy-Item -LiteralPath $paths.GameAddon -Destination $stageAddon -Recurse -Force
-        foreach ($relativePath in @("addoninfo.txt", "panorama\layout\custom_game\swift_menu_custom_hud.vxml_c", "panorama\styles\custom_game\swift_menu_custom_hud.vcss_c")) {
+        foreach ($relativePath in @("addoninfo.txt", "panorama\layout\custom_game\swift_menu_custom_hud.vxml_c", "panorama\layout\custom_game\cyber_card_custom_hud.vxml_c", "panorama\styles\custom_game\swift_menu_custom_hud.vcss_c")) {
             Assert-FileExists -Path (Join-Path $stageAddon $relativePath) -Message "VPK staging is missing: $relativePath"
         }
         if (Test-Path -LiteralPath (Join-Path $stageAddon "maps")) {
@@ -269,7 +338,7 @@ function Pack-HudVpk {
         if ($LASTEXITCODE -ne 0) {
             throw "vpkeditcli file-tree failed with exit code $LASTEXITCODE"
         }
-        foreach ($fileName in @("addoninfo.txt", "swift_menu_custom_hud.vxml_c", "swift_menu_custom_hud.vcss_c")) {
+        foreach ($fileName in @("addoninfo.txt", "swift_menu_custom_hud.vxml_c", "cyber_card_custom_hud.vxml_c", "swift_menu_custom_hud.vcss_c")) {
             if ($vpkTree -notmatch [regex]::Escape($fileName)) {
                 throw "Packed VPK is missing: $fileName"
             }
@@ -285,13 +354,19 @@ function Pack-HudVpk {
     Write-Host "Built Custom HUD VPK: $outVpk"
 }
 
-function Install-HudOverride {
+function Install-HudOverrideTarget {
+    param(
+        [string]$TargetCsgoPath,
+        [string]$TargetLabel
+    )
+
     Assert-FileExists -Path $outVpk -Message "Missing VPK: $outVpk. Run -Action Build first."
-    $gameInfoPath = Join-Path $CsgoPath "gameinfo.gi"
-    Assert-FileExists -Path $gameInfoPath -Message "Missing gameinfo.gi: $gameInfoPath"
+    Assert-DirectoryExists -Path $TargetCsgoPath -Message "$TargetLabel csgo directory not found: $TargetCsgoPath"
+    $gameInfoPath = Join-Path $TargetCsgoPath "gameinfo.gi"
+    Assert-FileExists -Path $gameInfoPath -Message "Missing $TargetLabel gameinfo.gi: $gameInfoPath"
 
     $targetName = "$AddonName.vpk"
-    $overrideDir = Join-Path $CsgoPath "overrides"
+    $overrideDir = Join-Path $TargetCsgoPath "overrides"
     $targetVpk = Join-Path $overrideDir $targetName
     $searchPathLine = "`t`t`tGame`tcsgo/overrides/$targetName"
     $backupPath = "$gameInfoPath.$AddonName.bak"
@@ -318,9 +393,29 @@ function Install-HudOverride {
         Set-Content -LiteralPath $gameInfoPath -Value $content
     }
 
-    Write-Host "Installed Custom HUD override: $targetVpk"
+    $sourceHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $outVpk).Hash
+    $targetHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $targetVpk).Hash
+    if ($sourceHash -ne $targetHash) {
+        throw "$TargetLabel VPK hash mismatch after installation: $targetVpk"
+    }
+
+    Write-Host "Installed $TargetLabel Custom HUD override: $targetVpk"
+    Write-Host "$TargetLabel SHA-256: $targetHash"
     Write-Host "Mounted by: $searchPathLine"
     Write-Host "Backup: $backupPath"
+}
+
+function Install-HudOverride {
+    Install-HudOverrideTarget -TargetCsgoPath $CsgoPath -TargetLabel "client"
+
+    if (-not [string]::IsNullOrWhiteSpace($ServerRoot)) {
+        $serverCsgoPath = Join-Path $ServerRoot "game\csgo"
+        $resolvedClient = (Resolve-Path -LiteralPath $CsgoPath).Path.TrimEnd('\', '/')
+        $resolvedServer = (Resolve-Path -LiteralPath $serverCsgoPath).Path.TrimEnd('\', '/')
+        if (-not $resolvedClient.Equals($resolvedServer, [System.StringComparison]::OrdinalIgnoreCase)) {
+            Install-HudOverrideTarget -TargetCsgoPath $serverCsgoPath -TargetLabel "server"
+        }
+    }
 }
 
 switch ($Action) {

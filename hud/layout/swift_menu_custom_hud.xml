@@ -4,45 +4,47 @@
 	</styles>
 	<Panel class="swift-hud-root" hittest="false">
 		<Panel id="dialog" class="swift-hud-dialog SwiftHudHidden" hittest="true">
-			<Panel class="swift-hud-header" hittest="false">
-				<Panel class="swift-hud-title-block" hittest="false">
-					<Label class="swift-hud-kicker" text="{s:kicker}" />
-					<Label class="swift-hud-title" text="{s:title}" />
+			<Panel class="swift-hud-native-card" hittest="true">
+				<Panel class="swift-hud-header" hittest="false">
+					<Panel class="swift-hud-title-block" hittest="false">
+						<Label class="swift-hud-kicker" text="{s:kicker}" />
+						<Label class="swift-hud-title" text="{s:title}" />
+					</Panel>
+					<Panel class="swift-hud-header-mark" hittest="false">
+						<Label text="X" />
+					</Panel>
 				</Panel>
-				<Panel class="swift-hud-header-mark" hittest="false">
-					<Label text="X" />
+				<Panel class="swift-hud-divider" hittest="false" />
+				<Panel class="swift-hud-status-row" hittest="false">
+					<Panel class="swift-hud-status-marker" hittest="false" />
+					<Label class="swift-hud-status" text="{s:status}" />
 				</Panel>
-			</Panel>
-			<Panel class="swift-hud-divider" hittest="false" />
-			<Panel class="swift-hud-status-row" hittest="false">
-				<Panel class="swift-hud-status-marker" hittest="false" />
-				<Label class="swift-hud-status" text="{s:status}" />
-			</Panel>
-			<Panel class="swift-hud-actions" hittest="true">
-				<Button id="swift_menu_primary" class="swift-hud-button SwiftHudPrimary">
-					<Panel class="swift-hud-action-key" hittest="false">
-						<Label text="1" />
-					</Panel>
-					<Panel class="swift-hud-action-copy" hittest="false">
-						<Label class="swift-hud-action-title" text="{s:primary-action}" />
-					</Panel>
-				</Button>
-				<Button id="swift_menu_secondary" class="swift-hud-button">
-					<Panel class="swift-hud-action-key" hittest="false">
-						<Label text="2" />
-					</Panel>
-					<Panel class="swift-hud-action-copy" hittest="false">
-						<Label class="swift-hud-action-title" text="{s:secondary-action}" />
-					</Panel>
-				</Button>
-				<Button id="swift_menu_close" class="swift-hud-button SwiftHudClose">
-					<Panel class="swift-hud-action-key" hittest="false">
-						<Label text="ESC" />
-					</Panel>
-					<Panel class="swift-hud-action-copy" hittest="false">
-						<Label class="swift-hud-action-title" text="{s:close-action}" />
-					</Panel>
-				</Button>
+				<Panel class="swift-hud-actions" hittest="true">
+					<Button id="swift_menu_primary" class="swift-hud-button SwiftHudPrimary">
+						<Panel class="swift-hud-action-key" hittest="false">
+							<Label text="1" />
+						</Panel>
+						<Panel class="swift-hud-action-copy" hittest="false">
+							<Label class="swift-hud-action-title" text="{s:primary-action}" />
+						</Panel>
+					</Button>
+					<Button id="swift_menu_secondary" class="swift-hud-button">
+						<Panel class="swift-hud-action-key" hittest="false">
+							<Label text="2" />
+						</Panel>
+						<Panel class="swift-hud-action-copy" hittest="false">
+							<Label class="swift-hud-action-title" text="{s:secondary-action}" />
+						</Panel>
+					</Button>
+					<Button id="swift_menu_close" class="swift-hud-button SwiftHudClose">
+						<Panel class="swift-hud-action-key" hittest="false">
+							<Label text="ESC" />
+						</Panel>
+						<Panel class="swift-hud-action-copy" hittest="false">
+							<Label class="swift-hud-action-title" text="{s:close-action}" />
+						</Panel>
+					</Button>
+				</Panel>
 			</Panel>
 		</Panel>
 	</Panel>

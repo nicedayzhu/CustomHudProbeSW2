@@ -12,8 +12,10 @@ server, with no Hammer workflow or pre-placed map entity.
 
 ## What it validates
 
-- `!chud_spawn` creates and displays the HUD probe.
-- `!chud_open` reopens and resets the issuing player's HUD menu.
+- `!chud_spawn menu` loads the button-menu layout into the single probe entity; omitting the argument defaults to `menu`.
+- `!chud_spawn card` switches the single probe entity to the standalone 3D-card layout.
+- `!chud_open` reopens the currently loaded HUD for the issuing player.
+- `!chud_close` hides the current HUD and releases the issuing player's input capture.
 - `!chud_status` reports the entity tracked by the plugin.
 - `!chud_clear` removes the HUD probe.
 - The client resolves and displays the HUD resources delivered by the resource VPK.
@@ -58,11 +60,12 @@ by `Build`:
 ```powershell
 .\tools\build_hud_resources.ps1 -Action Validate
 .\tools\build_hud_resources.ps1 -Action Build -Cs2Root $cs2Root -VpkEditCli $vpkEditCli
-.\tools\build_hud_resources.ps1 -Action Install -Cs2Root $cs2Root
+.\tools\build_hud_resources.ps1 -Action Install -Cs2Root $cs2Root -ServerRoot $serverRoot
 ```
 
-`Install` copies the VPK to `<Cs2Root>\game\csgo\overrides\` and adds its
-search path to that local installation's `gameinfo.gi`. It creates
+`Install` copies the same VPK to both the client `<Cs2Root>\game\csgo\overrides\`
+and server `<ServerRoot>\game\csgo\overrides\`, verifies both SHA-256 hashes,
+and adds the search path to both `gameinfo.gi` files. It creates
 `gameinfo.gi.swift_custom_hud_layout_probe.bak` once, so the mount can be
 reverted by restoring that backup after the relevant CS2 process is stopped.
 
@@ -76,8 +79,10 @@ Then join the test server and use these chat commands:
 
 | Command | Effect |
 | --- | --- |
-| `!chud_spawn` | Creates the probe and opens its menu for connected human players. |
-| `!chud_open` | Reopens and resets the invoking player's menu; the probe must already exist. |
+| `!chud_spawn menu` | Loads the button menu into the single probe entity; omitting the argument defaults to `menu`. |
+| `!chud_spawn card` | Replaces the old mode and loads the standalone 3D card into the single probe entity. |
+| `!chud_open` | Reopens the current HUD for the invoking player; the probe must already exist. |
+| `!chud_close` | Hides the current HUD and releases the invoking player's input capture. |
 | `!chud_status` | Reports the bridge and probe entity state. |
 | `!chud_clear` | Removes the probe and releases its input capture. |
 

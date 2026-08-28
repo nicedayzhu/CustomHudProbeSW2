@@ -9,6 +9,35 @@
 	width: 560px;
 	horizontal-align: center;
 	vertical-align: center;
+	overflow: noclip;
+	transition-property: opacity;
+	transition-duration: 0.12s;
+	opacity: 1;
+}
+
+#card_dialog
+{
+	width: 262px;
+	height: 342px;
+	horizontal-align: center;
+	vertical-align: center;
+	overflow: noclip;
+	transition-property: opacity;
+	transition-duration: 0.12s;
+	opacity: 1;
+}
+
+#dialog.SwiftHudHidden,
+#card_dialog.SwiftHudHidden
+{
+	visibility: collapse;
+	opacity: 0;
+}
+
+.swift-hud-native-card
+{
+	width: 560px;
+	vertical-align: center;
 	flow-children: down;
 	padding: 20px 22px 22px;
 	background-color: gradient(linear, 75% 100%, 0% 0%, from(rgba(8, 14, 20, 0.92)), to(rgba(14, 22, 30, 0.92)));
@@ -20,21 +49,409 @@
 	border-left: 3px solid #e4ae39;
 	border-radius: 3px;
 	box-shadow: rgba(0, 0, 0, 0.72) 0px 0px 28px 0px;
-	transition-property: opacity;
-	transition-duration: 0.12s;
-	opacity: 1;
+	transition-property: border, brightness;
+	transition-duration: 0.18s;
 }
 
-#dialog.SwiftHudHidden
-{
-	visibility: collapse;
-	opacity: 0;
-}
-
-#dialog.SwiftHudAccent
+#dialog.SwiftHudAccent .swift-hud-native-card
 {
 	border-color: rgba(130, 215, 255, 0.55);
 	border-left-color: #82d7ff;
+}
+
+.cyber-card-stage
+{
+	width: 262px;
+	height: 342px;
+	horizontal-align: center;
+	vertical-align: center;
+	perspective: 800px;
+	perspective-origin: 50% 50%;
+	overflow: noclip;
+}
+
+.cyber-tracker
+{
+	width: 262px;
+	height: 342px;
+	ignore-parent-flow: true;
+	overflow: noclip;
+	z-index: 200;
+}
+
+.cyber-hover-sensor
+{
+	width: 46px;
+	height: 61px;
+	ignore-parent-flow: true;
+	z-index: 220;
+}
+
+.cyber-tr-1, .cyber-tr-6, .cyber-tr-11, .cyber-tr-16, .cyber-tr-21 { x: 18px; }
+.cyber-tr-2, .cyber-tr-7, .cyber-tr-12, .cyber-tr-17, .cyber-tr-22 { x: 63px; }
+.cyber-tr-3, .cyber-tr-8, .cyber-tr-13, .cyber-tr-18, .cyber-tr-23 { x: 108px; }
+.cyber-tr-4, .cyber-tr-9, .cyber-tr-14, .cyber-tr-19, .cyber-tr-24 { x: 153px; }
+.cyber-tr-5, .cyber-tr-10, .cyber-tr-15, .cyber-tr-20, .cyber-tr-25 { x: 198px; }
+
+.cyber-tr-1, .cyber-tr-2, .cyber-tr-3, .cyber-tr-4, .cyber-tr-5 { y: 20px; }
+.cyber-tr-6, .cyber-tr-7, .cyber-tr-8, .cyber-tr-9, .cyber-tr-10 { y: 80px; }
+.cyber-tr-11, .cyber-tr-12, .cyber-tr-13, .cyber-tr-14, .cyber-tr-15 { y: 140px; }
+.cyber-tr-16, .cyber-tr-17, .cyber-tr-18, .cyber-tr-19, .cyber-tr-20 { y: 200px; }
+.cyber-tr-21, .cyber-tr-22, .cyber-tr-23, .cyber-tr-24, .cyber-tr-25 { y: 260px; }
+
+.cyber-card
+{
+	width: 226px;
+	height: 302px;
+	horizontal-align: center;
+	vertical-align: center;
+	background-color: gradient(linear, 0% 100%, 100% 0%, from(#1a1a1a), to(#262626));
+	border: 2px solid rgba(255, 255, 255, 0.10);
+	border-radius: 20px;
+	box-shadow: rgba(0, 0, 0, 0.55) 0px 0px 20px 0px;
+	overflow: clip;
+	transform-origin: 50% 50%;
+	transition-property: transform, brightness;
+	transition-duration: 0.70s;
+	transition-timing-function: ease-in-out;
+	transition-high-framerate: true;
+}
+
+#CyberCard
+{
+	z-index: 1;
+}
+
+.cyber-tracker:hover #CyberCard
+{
+	brightness: 1.10;
+	transition-duration: 0.125s;
+}
+
+#CyberTracker1:hover #CyberCard { transform: rotateX(20deg) rotateY(-10deg); }
+#CyberTracker2:hover #CyberCard { transform: rotateX(20deg) rotateY(-5deg); }
+#CyberTracker3:hover #CyberCard { transform: rotateX(20deg) rotateY(0deg); }
+#CyberTracker4:hover #CyberCard { transform: rotateX(20deg) rotateY(5deg); }
+#CyberTracker5:hover #CyberCard { transform: rotateX(20deg) rotateY(10deg); }
+#CyberTracker6:hover #CyberCard { transform: rotateX(10deg) rotateY(-10deg); }
+#CyberTracker7:hover #CyberCard { transform: rotateX(10deg) rotateY(-5deg); }
+#CyberTracker8:hover #CyberCard { transform: rotateX(10deg) rotateY(0deg); }
+#CyberTracker9:hover #CyberCard { transform: rotateX(10deg) rotateY(5deg); }
+#CyberTracker10:hover #CyberCard { transform: rotateX(10deg) rotateY(10deg); }
+#CyberTracker11:hover #CyberCard { transform: rotateX(0deg) rotateY(-10deg); }
+#CyberTracker12:hover #CyberCard { transform: rotateX(0deg) rotateY(-5deg); }
+#CyberTracker13:hover #CyberCard { transform: rotateX(0deg) rotateY(0deg); }
+#CyberTracker14:hover #CyberCard { transform: rotateX(0deg) rotateY(5deg); }
+#CyberTracker15:hover #CyberCard { transform: rotateX(0deg) rotateY(10deg); }
+#CyberTracker16:hover #CyberCard { transform: rotateX(-10deg) rotateY(-10deg); }
+#CyberTracker17:hover #CyberCard { transform: rotateX(-10deg) rotateY(-5deg); }
+#CyberTracker18:hover #CyberCard { transform: rotateX(-10deg) rotateY(0deg); }
+#CyberTracker19:hover #CyberCard { transform: rotateX(-10deg) rotateY(5deg); }
+#CyberTracker20:hover #CyberCard { transform: rotateX(-10deg) rotateY(10deg); }
+#CyberTracker21:hover #CyberCard { transform: rotateX(-20deg) rotateY(-10deg); }
+#CyberTracker22:hover #CyberCard { transform: rotateX(-20deg) rotateY(-5deg); }
+#CyberTracker23:hover #CyberCard { transform: rotateX(-20deg) rotateY(0deg); }
+#CyberTracker24:hover #CyberCard { transform: rotateX(-20deg) rotateY(5deg); }
+#CyberTracker25:hover #CyberCard { transform: rotateX(-20deg) rotateY(10deg); }
+
+#dialog.SwiftHudAccent .cyber-card
+{
+	border-color: rgba(92, 103, 255, 0.68);
+	box-shadow: rgba(92, 103, 255, 0.28) 0px 0px 28px 0px;
+}
+
+.cyber-card-content,
+.cyber-lines,
+.cyber-glowing-elements,
+.cyber-particles,
+.cyber-corners
+{
+	width: 100%;
+	height: 100%;
+}
+
+.cyber-card-aura
+{
+	width: 150%;
+	height: 150%;
+	horizontal-align: center;
+	vertical-align: center;
+	ignore-parent-flow: true;
+	background-color: gradient(radial, 50% 50%, 0% 0%, 50% 50%, from(rgba(0, 255, 170, 0.10)), color-stop(0.50, rgba(0, 162, 255, 0.05)), to(rgba(0, 0, 0, 0)));
+	blur: gaussian(14, 14, 1);
+	opacity: 0;
+	z-index: 1;
+	transition-property: opacity;
+	transition-duration: 0.20s;
+}
+
+.cyber-tracker:hover #CyberCard .cyber-card-aura
+{
+	opacity: 0.80;
+}
+
+.cyber-card-glare
+{
+	width: 145%;
+	height: 145%;
+	x: -50px;
+	y: -68px;
+	ignore-parent-flow: true;
+	pre-transform-rotate2d: -35deg;
+	background-color: gradient(linear, 0% 0%, 100% 0%, from(rgba(255, 255, 255, 0)), color-stop(0.45, rgba(255, 255, 255, 0.025)), color-stop(0.50, rgba(255, 255, 255, 0.13)), color-stop(0.55, rgba(255, 255, 255, 0.025)), to(rgba(255, 255, 255, 0)));
+	opacity: 0;
+	z-index: 8;
+	transition-property: opacity;
+	transition-duration: 0.30s;
+}
+
+.cyber-tracker:hover #CyberCard .cyber-card-glare
+{
+	opacity: 1;
+}
+
+.cyber-line
+{
+	width: 100%;
+	height: 1px;
+	ignore-parent-flow: true;
+	background-color: gradient(linear, 0% 0%, 100% 0%, from(rgba(92, 103, 255, 0)), color-stop(0.50, rgba(92, 103, 255, 0.34)), to(rgba(92, 103, 255, 0)));
+	transform-origin: 0% 50%;
+	animation-name: cyber-line-grow;
+	animation-duration: 3s;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+}
+
+.cyber-line-1 { y: 60px; animation-delay: 0s; }
+.cyber-line-2 { y: 120px; animation-delay: 1s; }
+.cyber-line-3 { y: 181px; animation-delay: 2s; }
+.cyber-line-4 { y: 241px; animation-delay: 1.5s; }
+
+.cyber-prompt
+{
+	width: 100%;
+	y: 165px;
+	ignore-parent-flow: true;
+	z-index: 10;
+	font-family: Stratum2 Condensed, 'Arial Unicode MS';
+	font-size: 16px;
+	font-weight: bold;
+	letter-spacing: 2px;
+	text-align: center;
+	color: rgba(255, 255, 255, 0.70);
+	text-shadow: 0px 0px 10px 1 rgba(255, 255, 255, 0.26);
+	transition-property: opacity;
+	transition-duration: 0.30s;
+}
+
+.cyber-tracker:hover #CyberCard .cyber-prompt
+{
+	opacity: 0;
+}
+
+.cyber-title
+{
+	width: 100%;
+	y: 24px;
+	ignore-parent-flow: true;
+	flow-children: down;
+	opacity: 0;
+	z-index: 10;
+	transition-property: opacity, transform;
+	transition-duration: 0.30s;
+	transition-timing-function: ease-in-out;
+}
+
+.cyber-tracker:hover #CyberCard .cyber-title
+{
+	opacity: 1;
+	transform: translateY(-10px);
+}
+
+.cyber-title Label
+{
+	width: 100%;
+	font-family: Stratum2, 'Arial Unicode MS';
+	font-size: 32px;
+	font-weight: bold;
+	letter-spacing: 4px;
+	text-align: center;
+	text-shadow: 0px 0px 14px 2 rgba(92, 103, 255, 0.42);
+}
+
+.cyber-title-top { color: #00ffaa; }
+.cyber-title-bottom { color: #00a2ff; margin-top: -4px; }
+
+.cyber-glow
+{
+	width: 120px;
+	height: 120px;
+	ignore-parent-flow: true;
+	border-radius: 50%;
+	background-color: gradient(radial, 50% 50%, 0% 0%, 60% 60%, from(rgba(0, 255, 170, 0.30)), to(rgba(0, 255, 170, 0)));
+	blur: gaussian(15, 15, 1);
+	opacity: 0;
+	transition-property: opacity;
+	transition-duration: 0.30s;
+}
+
+.cyber-glow-1 { x: -24px; y: -24px; }
+.cyber-glow-2 { x: 142px; y: 91px; }
+.cyber-glow-3 { x: 68px; y: 206px; }
+
+.cyber-tracker:hover #CyberCard .cyber-glow
+{
+	opacity: 1;
+}
+
+.cyber-subtitle
+{
+	width: fit-children;
+	horizontal-align: center;
+	vertical-align: bottom;
+	margin-bottom: 48px;
+	ignore-parent-flow: true;
+	flow-children: right;
+	z-index: 10;
+	transform: translateY(30px);
+}
+
+.cyber-subtitle Label
+{
+	font-family: Stratum2 Condensed, 'Arial Unicode MS';
+	font-size: 12px;
+	font-weight: bold;
+	letter-spacing: 2px;
+	color: rgba(255, 255, 255, 0.60);
+}
+
+.cyber-subtitle .cyber-highlight
+{
+	margin-left: 6px;
+	color: #855cff;
+}
+
+.cyber-particle
+{
+	width: 4px;
+	height: 4px;
+	ignore-parent-flow: true;
+	background-color: #00ffaa;
+	border-radius: 50%;
+	box-shadow: rgba(0, 255, 170, 0.65) 0px 0px 7px 0px;
+	opacity: 0;
+}
+
+.cyber-particle-1 { x: 44px; y: 120px; }
+.cyber-particle-2 { x: 178px; y: 181px; }
+.cyber-particle-3 { x: 92px; y: 60px; }
+.cyber-particle-4 { x: 132px; y: 242px; }
+.cyber-particle-5 { x: 136px; y: 91px; }
+.cyber-particle-6 { x: 70px; y: 211px; }
+
+.cyber-tracker:hover #CyberCard .cyber-particle
+{
+	animation-duration: 2s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: infinite;
+}
+
+.cyber-tracker:hover #CyberCard .cyber-particle-1 { animation-name: cyber-particle-float-1; }
+.cyber-tracker:hover #CyberCard .cyber-particle-2 { animation-name: cyber-particle-float-2; }
+.cyber-tracker:hover #CyberCard .cyber-particle-3 { animation-name: cyber-particle-float-3; }
+.cyber-tracker:hover #CyberCard .cyber-particle-4 { animation-name: cyber-particle-float-4; }
+.cyber-tracker:hover #CyberCard .cyber-particle-5 { animation-name: cyber-particle-float-5; }
+.cyber-tracker:hover #CyberCard .cyber-particle-6 { animation-name: cyber-particle-float-6; }
+
+.cyber-corner
+{
+	width: 16px;
+	height: 16px;
+	ignore-parent-flow: true;
+	border: 2px solid rgba(92, 103, 255, 0.34);
+	z-index: 9;
+	transition-property: border, box-shadow;
+	transition-duration: 0.30s;
+}
+
+.cyber-corner-1 { x: 11px; y: 11px; border-right: 0px; border-bottom: 0px; }
+.cyber-corner-2 { x: 199px; y: 11px; border-left: 0px; border-bottom: 0px; }
+.cyber-corner-3 { x: 11px; y: 275px; border-right: 0px; border-top: 0px; }
+.cyber-corner-4 { x: 199px; y: 275px; border-left: 0px; border-top: 0px; }
+
+.cyber-tracker:hover #CyberCard .cyber-corner
+{
+	border-color: rgba(92, 103, 255, 0.86);
+	box-shadow: rgba(92, 103, 255, 0.50) 0px 0px 10px 0px;
+}
+
+.cyber-scan-line
+{
+	width: 100%;
+	height: 70px;
+	ignore-parent-flow: true;
+	z-index: 7;
+	background-color: gradient(linear, 0% 0%, 0% 100%, from(rgba(92, 103, 255, 0)), color-stop(0.50, rgba(92, 103, 255, 0.12)), to(rgba(92, 103, 255, 0)));
+	animation-name: cyber-scan-move;
+	animation-duration: 2s;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+}
+
+@keyframes 'cyber-line-grow'
+{
+	0% { transform: scaleX(0); opacity: 0; }
+	50% { transform: scaleX(1); opacity: 1; }
+	100% { transform: scaleX(0); opacity: 0; }
+}
+
+@keyframes 'cyber-scan-move'
+{
+	0% { transform: translateY(-75px); }
+	100% { transform: translateY(310px); }
+}
+
+@keyframes 'cyber-particle-float-1'
+{
+	0% { transform: translateX(0px) translateY(0px); opacity: 0; }
+	50% { opacity: 1; }
+	100% { transform: translateX(36px) translateY(-36px); opacity: 0; }
+}
+
+@keyframes 'cyber-particle-float-2'
+{
+	0% { transform: translateX(0px) translateY(0px); opacity: 0; }
+	50% { opacity: 1; }
+	100% { transform: translateX(-36px) translateY(-36px); opacity: 0; }
+}
+
+@keyframes 'cyber-particle-float-3'
+{
+	0% { transform: translateX(0px) translateY(0px); opacity: 0; }
+	50% { opacity: 1; }
+	100% { transform: translateX(18px) translateY(36px); opacity: 0; }
+}
+
+@keyframes 'cyber-particle-float-4'
+{
+	0% { transform: translateX(0px) translateY(0px); opacity: 0; }
+	50% { opacity: 1; }
+	100% { transform: translateX(-18px) translateY(36px); opacity: 0; }
+}
+
+@keyframes 'cyber-particle-float-5'
+{
+	0% { transform: translateX(0px) translateY(0px); opacity: 0; }
+	50% { opacity: 1; }
+	100% { transform: translateX(36px) translateY(18px); opacity: 0; }
+}
+
+@keyframes 'cyber-particle-float-6'
+{
+	0% { transform: translateX(0px) translateY(0px); opacity: 0; }
+	50% { opacity: 1; }
+	100% { transform: translateX(-36px) translateY(18px); opacity: 0; }
 }
 
 .swift-hud-header

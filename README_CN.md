@@ -11,8 +11,10 @@
 
 ## 已验证的能力
 
-- `!chud_spawn`：创建并显示 HUD 探针。
-- `!chud_open`：重新打开并重置发起命令玩家的 HUD 菜单。
+- `!chud_spawn menu`：在唯一探针实体中加载并显示按钮菜单 layout；省略参数时默认使用 `menu`。
+- `!chud_spawn card`：切换唯一探针实体，加载独立 3D 卡片 layout。
+- `!chud_open`：重新打开当前已加载的 HUD。
+- `!chud_close`：为发起命令的玩家隐藏当前 HUD 并释放输入捕获。
 - `!chud_status`：显示插件当前跟踪的实体。
 - `!chud_clear`：移除 HUD 探针。
 - 客户端能够解析并显示资源 VPK 提供的 HUD 资源。
@@ -51,11 +53,11 @@ $vpkEditCli = 'D:\Tools\VPKEdit\vpkeditcli.exe'
 ```powershell
 .\tools\build_hud_resources.ps1 -Action Validate
 .\tools\build_hud_resources.ps1 -Action Build -Cs2Root $cs2Root -VpkEditCli $vpkEditCli
-.\tools\build_hud_resources.ps1 -Action Install -Cs2Root $cs2Root
+.\tools\build_hud_resources.ps1 -Action Install -Cs2Root $cs2Root -ServerRoot $serverRoot
 ```
 
-`Install` 会将 VPK 复制到 `<Cs2Root>\game\csgo\overrides\`，并在该本地安装的
-`gameinfo.gi` 中加入搜索路径。首次执行会创建
+`Install` 会把同一 VPK 同步复制到客户端 `<Cs2Root>\game\csgo\overrides\` 与服务端
+`<ServerRoot>\game\csgo\overrides\`，分别检查 SHA-256，并在两端 `gameinfo.gi` 中加入搜索路径。首次执行会创建
 `gameinfo.gi.swift_custom_hud_layout_probe.bak`，停止相关 CS2 进程后可恢复该备份以撤销挂载。
 
 在服务器控制台重载已部署插件（或重启服务器）：
@@ -68,8 +70,10 @@ sw plugins reload CustomHudProbeSW2
 
 | 命令 | 作用 |
 | --- | --- |
-| `!chud_spawn` | 创建探针，并向当前已连接的真人玩家打开菜单。 |
-| `!chud_open` | 重新打开并重置发起命令玩家的菜单；探针必须已存在。 |
+| `!chud_spawn menu` | 在唯一探针实体中加载按钮菜单；省略参数时默认使用 `menu`。 |
+| `!chud_spawn card` | 销毁旧模式并在唯一探针实体中加载独立 3D 卡片。 |
+| `!chud_open` | 重新打开发起命令玩家的当前 HUD；探针必须已存在。 |
+| `!chud_close` | 隐藏发起命令玩家的当前 HUD并释放输入捕获。 |
 | `!chud_status` | 报告桥接层与探针实体状态。 |
 | `!chud_clear` | 移除探针并释放输入捕获。 |
 

@@ -1,0 +1,127 @@
+<root>
+	<styles>
+		<include src="s2r://panorama/styles/custom_game/swift_menu_custom_hud.vcss_c" />
+	</styles>
+	<Panel class="swift-hud-root" hittest="false">
+		<Panel id="card_dialog" class="cyber-card-dialog SwiftHudHidden" hittest="true">
+			<Panel class="cyber-card-stage" hittest="true">
+				<Panel id="CyberTracker1" class="cyber-tracker" hittest="false">
+					<Panel class="cyber-hover-sensor cyber-tr-1" hittest="true" />
+					<Panel id="CyberTracker2" class="cyber-tracker" hittest="false">
+						<Panel class="cyber-hover-sensor cyber-tr-2" hittest="true" />
+						<Panel id="CyberTracker3" class="cyber-tracker" hittest="false">
+							<Panel class="cyber-hover-sensor cyber-tr-3" hittest="true" />
+							<Panel id="CyberTracker4" class="cyber-tracker" hittest="false">
+								<Panel class="cyber-hover-sensor cyber-tr-4" hittest="true" />
+								<Panel id="CyberTracker5" class="cyber-tracker" hittest="false">
+									<Panel class="cyber-hover-sensor cyber-tr-5" hittest="true" />
+									<Panel id="CyberTracker6" class="cyber-tracker" hittest="false">
+										<Panel class="cyber-hover-sensor cyber-tr-6" hittest="true" />
+										<Panel id="CyberTracker7" class="cyber-tracker" hittest="false">
+											<Panel class="cyber-hover-sensor cyber-tr-7" hittest="true" />
+											<Panel id="CyberTracker8" class="cyber-tracker" hittest="false">
+												<Panel class="cyber-hover-sensor cyber-tr-8" hittest="true" />
+												<Panel id="CyberTracker9" class="cyber-tracker" hittest="false">
+													<Panel class="cyber-hover-sensor cyber-tr-9" hittest="true" />
+													<Panel id="CyberTracker10" class="cyber-tracker" hittest="false">
+														<Panel class="cyber-hover-sensor cyber-tr-10" hittest="true" />
+														<Panel id="CyberTracker11" class="cyber-tracker" hittest="false">
+															<Panel class="cyber-hover-sensor cyber-tr-11" hittest="true" />
+															<Panel id="CyberTracker12" class="cyber-tracker" hittest="false">
+																<Panel class="cyber-hover-sensor cyber-tr-12" hittest="true" />
+																<Panel id="CyberTracker13" class="cyber-tracker" hittest="false">
+																	<Panel class="cyber-hover-sensor cyber-tr-13" hittest="true" />
+																	<Panel id="CyberTracker14" class="cyber-tracker" hittest="false">
+																		<Panel class="cyber-hover-sensor cyber-tr-14" hittest="true" />
+																		<Panel id="CyberTracker15" class="cyber-tracker" hittest="false">
+																			<Panel class="cyber-hover-sensor cyber-tr-15" hittest="true" />
+																			<Panel id="CyberTracker16" class="cyber-tracker" hittest="false">
+																				<Panel class="cyber-hover-sensor cyber-tr-16" hittest="true" />
+																				<Panel id="CyberTracker17" class="cyber-tracker" hittest="false">
+																					<Panel class="cyber-hover-sensor cyber-tr-17" hittest="true" />
+																					<Panel id="CyberTracker18" class="cyber-tracker" hittest="false">
+																						<Panel class="cyber-hover-sensor cyber-tr-18" hittest="true" />
+																						<Panel id="CyberTracker19" class="cyber-tracker" hittest="false">
+																							<Panel class="cyber-hover-sensor cyber-tr-19" hittest="true" />
+																							<Panel id="CyberTracker20" class="cyber-tracker" hittest="false">
+																								<Panel class="cyber-hover-sensor cyber-tr-20" hittest="true" />
+																								<Panel id="CyberTracker21" class="cyber-tracker" hittest="false">
+																									<Panel class="cyber-hover-sensor cyber-tr-21" hittest="true" />
+																									<Panel id="CyberTracker22" class="cyber-tracker" hittest="false">
+																										<Panel class="cyber-hover-sensor cyber-tr-22" hittest="true" />
+																										<Panel id="CyberTracker23" class="cyber-tracker" hittest="false">
+																											<Panel class="cyber-hover-sensor cyber-tr-23" hittest="true" />
+																											<Panel id="CyberTracker24" class="cyber-tracker" hittest="false">
+																												<Panel class="cyber-hover-sensor cyber-tr-24" hittest="true" />
+																												<Panel id="CyberTracker25" class="cyber-tracker" hittest="false">
+																													<Panel class="cyber-hover-sensor cyber-tr-25" hittest="true" />
+																													<Panel id="CyberCard" class="cyber-card" hittest="false">
+																														<Panel class="cyber-card-content" hittest="false">
+																															<Panel class="cyber-card-aura" hittest="false" />
+																															<Panel class="cyber-card-glare" hittest="false" />
+																															<Panel class="cyber-lines" hittest="false">
+																																<Panel class="cyber-line cyber-line-1" hittest="false" />
+																																<Panel class="cyber-line cyber-line-2" hittest="false" />
+																																<Panel class="cyber-line cyber-line-3" hittest="false" />
+																																<Panel class="cyber-line cyber-line-4" hittest="false" />
+																															</Panel>
+																															<Label class="cyber-prompt" text="HOVER ME" hittest="false" />
+																															<Panel class="cyber-title" hittest="false">
+																																<Label class="cyber-title-top" text="CYBER" hittest="false" />
+																																<Label class="cyber-title-bottom" text="CARD" hittest="false" />
+																															</Panel>
+																															<Panel class="cyber-glowing-elements" hittest="false">
+																																<Panel class="cyber-glow cyber-glow-1" hittest="false" />
+																																<Panel class="cyber-glow cyber-glow-2" hittest="false" />
+																																<Panel class="cyber-glow cyber-glow-3" hittest="false" />
+																															</Panel>
+																															<Panel class="cyber-subtitle" hittest="false">
+																																<Label text="INTERACTIVE" hittest="false" />
+																																<Label class="cyber-highlight" text="3D EFFECT" hittest="false" />
+																															</Panel>
+																															<Panel class="cyber-particles" hittest="false">
+																																<Panel class="cyber-particle cyber-particle-1" hittest="false" />
+																																<Panel class="cyber-particle cyber-particle-2" hittest="false" />
+																																<Panel class="cyber-particle cyber-particle-3" hittest="false" />
+																																<Panel class="cyber-particle cyber-particle-4" hittest="false" />
+																																<Panel class="cyber-particle cyber-particle-5" hittest="false" />
+																																<Panel class="cyber-particle cyber-particle-6" hittest="false" />
+																															</Panel>
+																															<Panel class="cyber-corners" hittest="false">
+																																<Panel class="cyber-corner cyber-corner-1" hittest="false" />
+																																<Panel class="cyber-corner cyber-corner-2" hittest="false" />
+																																<Panel class="cyber-corner cyber-corner-3" hittest="false" />
+																																<Panel class="cyber-corner cyber-corner-4" hittest="false" />
+																															</Panel>
+																															<Panel class="cyber-scan-line" hittest="false" />
+																														</Panel>
+																													</Panel>
+																												</Panel>
+																											</Panel>
+																										</Panel>
+																									</Panel>
+																								</Panel>
+																							</Panel>
+																						</Panel>
+																					</Panel>
+																				</Panel>
+																			</Panel>
+																		</Panel>
+																	</Panel>
+																</Panel>
+															</Panel>
+														</Panel>
+													</Panel>
+												</Panel>
+											</Panel>
+										</Panel>
+									</Panel>
+								</Panel>
+							</Panel>
+						</Panel>
+					</Panel>
+				</Panel>
+			</Panel>
+		</Panel>
+	</Panel>
+</root>
