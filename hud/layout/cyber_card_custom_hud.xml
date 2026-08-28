@@ -1,4 +1,8 @@
 <root>
+	<!--
+		Cyber card effect adapted from Uiverse.io by 00Kubi:
+		https://uiverse.io/00Kubi/cowardly-eagle-56
+	-->
 	<styles>
 		<include src="s2r://panorama/styles/custom_game/swift_menu_custom_hud.vcss_c" />
 	</styles>
@@ -58,6 +62,7 @@
 																													<Panel id="CyberCard" class="cyber-card" hittest="false">
 																														<Panel class="cyber-card-content" hittest="false">
 																															<Panel class="cyber-card-aura" hittest="false" />
+																															<Panel class="cyber-card-inset" hittest="false" />
 																															<Panel class="cyber-card-glare" hittest="false" />
 																															<Panel class="cyber-lines" hittest="false">
 																																<Panel class="cyber-line cyber-line-1" hittest="false" />
@@ -65,7 +70,10 @@
 																																<Panel class="cyber-line cyber-line-3" hittest="false" />
 																																<Panel class="cyber-line cyber-line-4" hittest="false" />
 																															</Panel>
-																															<Label class="cyber-prompt" text="HOVER ME" hittest="false" />
+																															<Panel class="cyber-prompt" hittest="false">
+																																<Label class="cyber-prompt-line" text="HOVER" hittest="false" />
+																																<Label class="cyber-prompt-line" text="ME" hittest="false" />
+																															</Panel>
 																															<Panel class="cyber-title" hittest="false">
 																																<Label class="cyber-title-top" text="CYBER" hittest="false" />
 																																<Label class="cyber-title-bottom" text="CARD" hittest="false" />
@@ -76,8 +84,11 @@
 																																<Panel class="cyber-glow cyber-glow-3" hittest="false" />
 																															</Panel>
 																															<Panel class="cyber-subtitle" hittest="false">
-																																<Label text="INTERACTIVE" hittest="false" />
-																																<Label class="cyber-highlight" text="3D EFFECT" hittest="false" />
+																																<Panel class="cyber-subtitle-row" hittest="false">
+																																	<Label text="INTERACTIVE" hittest="false" />
+																																	<Label class="cyber-highlight" text="3D" hittest="false" />
+																																</Panel>
+																																<Label class="cyber-highlight cyber-highlight-effect" text="EFFECT" hittest="false" />
 																															</Panel>
 																															<Panel class="cyber-particles" hittest="false">
 																																<Panel class="cyber-particle cyber-particle-1" hittest="false" />

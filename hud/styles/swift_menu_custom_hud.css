@@ -17,8 +17,8 @@
 
 #card_dialog
 {
-	width: 262px;
-	height: 342px;
+	width: 226px;
+	height: 302px;
 	horizontal-align: center;
 	vertical-align: center;
 	overflow: noclip;
@@ -59,10 +59,11 @@
 	border-left-color: #82d7ff;
 }
 
+/* The reference card is 190x254. The stage adds 18px/24px noclip gutters. */
 .cyber-card-stage
 {
-	width: 262px;
-	height: 342px;
+	width: 226px;
+	height: 302px;
 	horizontal-align: center;
 	vertical-align: center;
 	perspective: 800px;
@@ -72,8 +73,8 @@
 
 .cyber-tracker
 {
-	width: 262px;
-	height: 342px;
+	width: 226px;
+	height: 302px;
 	ignore-parent-flow: true;
 	overflow: noclip;
 	z-index: 200;
@@ -81,34 +82,34 @@
 
 .cyber-hover-sensor
 {
-	width: 46px;
-	height: 61px;
+	width: 38px;
+	height: 51px;
 	ignore-parent-flow: true;
 	z-index: 220;
 }
 
 .cyber-tr-1, .cyber-tr-6, .cyber-tr-11, .cyber-tr-16, .cyber-tr-21 { x: 18px; }
-.cyber-tr-2, .cyber-tr-7, .cyber-tr-12, .cyber-tr-17, .cyber-tr-22 { x: 63px; }
-.cyber-tr-3, .cyber-tr-8, .cyber-tr-13, .cyber-tr-18, .cyber-tr-23 { x: 108px; }
-.cyber-tr-4, .cyber-tr-9, .cyber-tr-14, .cyber-tr-19, .cyber-tr-24 { x: 153px; }
-.cyber-tr-5, .cyber-tr-10, .cyber-tr-15, .cyber-tr-20, .cyber-tr-25 { x: 198px; }
+.cyber-tr-2, .cyber-tr-7, .cyber-tr-12, .cyber-tr-17, .cyber-tr-22 { x: 56px; }
+.cyber-tr-3, .cyber-tr-8, .cyber-tr-13, .cyber-tr-18, .cyber-tr-23 { x: 94px; }
+.cyber-tr-4, .cyber-tr-9, .cyber-tr-14, .cyber-tr-19, .cyber-tr-24 { x: 132px; }
+.cyber-tr-5, .cyber-tr-10, .cyber-tr-15, .cyber-tr-20, .cyber-tr-25 { x: 170px; }
 
-.cyber-tr-1, .cyber-tr-2, .cyber-tr-3, .cyber-tr-4, .cyber-tr-5 { y: 20px; }
-.cyber-tr-6, .cyber-tr-7, .cyber-tr-8, .cyber-tr-9, .cyber-tr-10 { y: 80px; }
-.cyber-tr-11, .cyber-tr-12, .cyber-tr-13, .cyber-tr-14, .cyber-tr-15 { y: 140px; }
-.cyber-tr-16, .cyber-tr-17, .cyber-tr-18, .cyber-tr-19, .cyber-tr-20 { y: 200px; }
-.cyber-tr-21, .cyber-tr-22, .cyber-tr-23, .cyber-tr-24, .cyber-tr-25 { y: 260px; }
+.cyber-tr-1, .cyber-tr-2, .cyber-tr-3, .cyber-tr-4, .cyber-tr-5 { y: 24px; }
+.cyber-tr-6, .cyber-tr-7, .cyber-tr-8, .cyber-tr-9, .cyber-tr-10 { y: 75px; }
+.cyber-tr-11, .cyber-tr-12, .cyber-tr-13, .cyber-tr-14, .cyber-tr-15 { y: 126px; }
+.cyber-tr-16, .cyber-tr-17, .cyber-tr-18, .cyber-tr-19, .cyber-tr-20 { y: 177px; }
+.cyber-tr-21, .cyber-tr-22, .cyber-tr-23, .cyber-tr-24, .cyber-tr-25 { y: 228px; }
 
 .cyber-card
 {
-	width: 226px;
-	height: 302px;
+	width: 190px;
+	height: 254px;
 	horizontal-align: center;
 	vertical-align: center;
 	background-color: gradient(linear, 0% 100%, 100% 0%, from(#1a1a1a), to(#262626));
 	border: 2px solid rgba(255, 255, 255, 0.10);
 	border-radius: 20px;
-	box-shadow: rgba(0, 0, 0, 0.55) 0px 0px 20px 0px;
+	box-shadow: rgba(0, 0, 0, 0.30) 0px 0px 20px 0px;
 	overflow: clip;
 	transform-origin: 50% 50%;
 	transition-property: transform, brightness;
@@ -170,6 +171,21 @@
 	height: 100%;
 }
 
+.cyber-glowing-elements { z-index: 2; }
+.cyber-lines { z-index: 3; }
+.cyber-particles
+{
+	z-index: 9;
+	opacity: 0;
+	transition-property: opacity;
+	transition-duration: 0.18s;
+}
+
+.cyber-tracker:hover #CyberCard .cyber-particles
+{
+	opacity: 1;
+}
+
 .cyber-card-aura
 {
 	width: 150%;
@@ -178,7 +194,7 @@
 	vertical-align: center;
 	ignore-parent-flow: true;
 	background-color: gradient(radial, 50% 50%, 0% 0%, 50% 50%, from(rgba(0, 255, 170, 0.10)), color-stop(0.50, rgba(0, 162, 255, 0.05)), to(rgba(0, 0, 0, 0)));
-	blur: gaussian(14, 14, 1);
+	blur: gaussian(20, 20, 1);
 	opacity: 0;
 	z-index: 1;
 	transition-property: opacity;
@@ -190,15 +206,22 @@
 	opacity: 0.80;
 }
 
+.cyber-card-inset
+{
+	width: 100%;
+	height: 100%;
+	ignore-parent-flow: true;
+	border-radius: 20px;
+	background-color: gradient(radial, 50% 50%, 0% 0%, 50% 50%, from(rgba(0, 0, 0, 0)), color-stop(0.72, rgba(0, 0, 0, 0)), to(rgba(0, 0, 0, 0.20)));
+	z-index: 6;
+}
+
 .cyber-card-glare
 {
-	width: 145%;
-	height: 145%;
-	x: -50px;
-	y: -68px;
+	width: 100%;
+	height: 100%;
 	ignore-parent-flow: true;
-	pre-transform-rotate2d: -35deg;
-	background-color: gradient(linear, 0% 0%, 100% 0%, from(rgba(255, 255, 255, 0)), color-stop(0.45, rgba(255, 255, 255, 0.025)), color-stop(0.50, rgba(255, 255, 255, 0.13)), color-stop(0.55, rgba(255, 255, 255, 0.025)), to(rgba(255, 255, 255, 0)));
+	background-color: gradient(linear, 0% 0%, 100% 100%, from(rgba(255, 255, 255, 0)), color-stop(0.45, rgba(255, 255, 255, 0.05)), color-stop(0.50, rgba(255, 255, 255, 0.10)), color-stop(0.55, rgba(255, 255, 255, 0.05)), to(rgba(255, 255, 255, 0)));
 	opacity: 0;
 	z-index: 8;
 	transition-property: opacity;
@@ -215,7 +238,7 @@
 	width: 100%;
 	height: 1px;
 	ignore-parent-flow: true;
-	background-color: gradient(linear, 0% 0%, 100% 0%, from(rgba(92, 103, 255, 0)), color-stop(0.50, rgba(92, 103, 255, 0.34)), to(rgba(92, 103, 255, 0)));
+	background-color: gradient(linear, 0% 0%, 100% 0%, from(rgba(92, 103, 255, 0)), color-stop(0.50, rgba(92, 103, 255, 0.20)), to(rgba(92, 103, 255, 0)));
 	transform-origin: 0% 50%;
 	animation-name: cyber-line-grow;
 	animation-duration: 3s;
@@ -223,26 +246,34 @@
 	animation-iteration-count: infinite;
 }
 
-.cyber-line-1 { y: 60px; animation-delay: 0s; }
-.cyber-line-2 { y: 120px; animation-delay: 1s; }
-.cyber-line-3 { y: 181px; animation-delay: 2s; }
-.cyber-line-4 { y: 241px; animation-delay: 1.5s; }
+.cyber-line-1 { y: 51px; animation-delay: 0s; }
+.cyber-line-2 { y: 102px; transform-origin: 100% 50%; animation-delay: 1s; }
+.cyber-line-3 { y: 152px; animation-delay: 2s; }
+.cyber-line-4 { y: 203px; transform-origin: 100% 50%; animation-delay: 1.5s; }
 
 .cyber-prompt
 {
 	width: 100%;
-	y: 165px;
+	height: 46px;
+	vertical-align: bottom;
+	margin-bottom: 96px;
 	ignore-parent-flow: true;
+	flow-children: down;
 	z-index: 10;
-	font-family: Stratum2 Condensed, 'Arial Unicode MS';
+	transition-property: opacity;
+	transition-duration: 0.30s;
+}
+
+.cyber-prompt-line
+{
+	width: 100%;
+	font-family: 'Arial Unicode MS';
 	font-size: 16px;
-	font-weight: bold;
+	font-weight: semi-bold;
 	letter-spacing: 2px;
 	text-align: center;
 	color: rgba(255, 255, 255, 0.70);
 	text-shadow: 0px 0px 10px 1 rgba(255, 255, 255, 0.26);
-	transition-property: opacity;
-	transition-duration: 0.30s;
 }
 
 .cyber-tracker:hover #CyberCard .cyber-prompt
@@ -253,7 +284,7 @@
 .cyber-title
 {
 	width: 100%;
-	y: 24px;
+	y: 20px;
 	ignore-parent-flow: true;
 	flow-children: down;
 	opacity: 0;
@@ -272,33 +303,33 @@
 .cyber-title Label
 {
 	width: 100%;
-	font-family: Stratum2, 'Arial Unicode MS';
-	font-size: 32px;
+	font-family: 'Arial Unicode MS';
+	font-size: 28px;
 	font-weight: bold;
 	letter-spacing: 4px;
 	text-align: center;
-	text-shadow: 0px 0px 14px 2 rgba(92, 103, 255, 0.42);
+	text-shadow: 0px 0px 10px 1 rgba(0, 255, 196, 0.28);
 }
 
-.cyber-title-top { color: #00ffaa; }
-.cyber-title-bottom { color: #00a2ff; margin-top: -4px; }
+.cyber-title-top { color: rgba(16, 229, 216, 0.94); }
+.cyber-title-bottom { color: rgba(20, 184, 255, 0.94); margin-top: 1px; }
 
 .cyber-glow
 {
-	width: 120px;
-	height: 120px;
+	width: 180px;
+	height: 180px;
 	ignore-parent-flow: true;
 	border-radius: 50%;
-	background-color: gradient(radial, 50% 50%, 0% 0%, 60% 60%, from(rgba(0, 255, 170, 0.30)), to(rgba(0, 255, 170, 0)));
-	blur: gaussian(15, 15, 1);
+	/* A larger feathered gradient avoids Panorama clipping gaussian blur at 100px. */
+	background-color: gradient(radial, 50% 50%, 0% 0%, 50% 50%, from(rgba(0, 255, 170, 0.14)), color-stop(0.34, rgba(0, 255, 170, 0.09)), color-stop(0.68, rgba(0, 255, 170, 0.025)), to(rgba(0, 255, 170, 0)));
 	opacity: 0;
 	transition-property: opacity;
 	transition-duration: 0.30s;
 }
 
-.cyber-glow-1 { x: -24px; y: -24px; }
-.cyber-glow-2 { x: 142px; y: 91px; }
-.cyber-glow-3 { x: 68px; y: 206px; }
+.cyber-glow-1 { x: -60px; y: -60px; }
+.cyber-glow-2 { x: 80px; y: 37px; }
+.cyber-glow-3 { x: 17px; y: 134px; }
 
 .cyber-tracker:hover #CyberCard .cyber-glow
 {
@@ -307,92 +338,102 @@
 
 .cyber-subtitle
 {
-	width: fit-children;
-	horizontal-align: center;
+	width: 100%;
 	vertical-align: bottom;
-	margin-bottom: 48px;
+	margin-bottom: 37px;
 	ignore-parent-flow: true;
-	flow-children: right;
+	flow-children: down;
 	z-index: 10;
 	transform: translateY(30px);
 }
 
+.cyber-subtitle-row
+{
+	width: fit-children;
+	horizontal-align: center;
+	flow-children: right;
+}
+
 .cyber-subtitle Label
 {
-	font-family: Stratum2 Condensed, 'Arial Unicode MS';
+	font-family: 'Arial Unicode MS';
 	font-size: 12px;
-	font-weight: bold;
+	font-weight: normal;
 	letter-spacing: 2px;
 	color: rgba(255, 255, 255, 0.60);
 }
 
 .cyber-subtitle .cyber-highlight
 {
-	margin-left: 6px;
+	margin-left: 5px;
 	color: #855cff;
+	font-weight: bold;
+}
+
+.cyber-subtitle .cyber-highlight-effect
+{
+	width: 100%;
+	margin-left: 0px;
+	margin-top: -1px;
+	text-align: center;
 }
 
 .cyber-particle
 {
-	width: 4px;
-	height: 4px;
+	width: 3px;
+	height: 3px;
 	ignore-parent-flow: true;
-	background-color: #00ffaa;
+	background-color: rgba(0, 255, 170, 0.92);
 	border-radius: 50%;
-	box-shadow: rgba(0, 255, 170, 0.65) 0px 0px 7px 0px;
 	opacity: 0;
-}
-
-.cyber-particle-1 { x: 44px; y: 120px; }
-.cyber-particle-2 { x: 178px; y: 181px; }
-.cyber-particle-3 { x: 92px; y: 60px; }
-.cyber-particle-4 { x: 132px; y: 242px; }
-.cyber-particle-5 { x: 136px; y: 91px; }
-.cyber-particle-6 { x: 70px; y: 211px; }
-
-.cyber-tracker:hover #CyberCard .cyber-particle
-{
 	animation-duration: 2s;
-	animation-timing-function: ease-in-out;
+	animation-timing-function: linear;
 	animation-iteration-count: infinite;
 }
 
-.cyber-tracker:hover #CyberCard .cyber-particle-1 { animation-name: cyber-particle-float-1; }
-.cyber-tracker:hover #CyberCard .cyber-particle-2 { animation-name: cyber-particle-float-2; }
-.cyber-tracker:hover #CyberCard .cyber-particle-3 { animation-name: cyber-particle-float-3; }
-.cyber-tracker:hover #CyberCard .cyber-particle-4 { animation-name: cyber-particle-float-4; }
-.cyber-tracker:hover #CyberCard .cyber-particle-5 { animation-name: cyber-particle-float-5; }
-.cyber-tracker:hover #CyberCard .cyber-particle-6 { animation-name: cyber-particle-float-6; }
+.cyber-particle-1 { x: 38px; y: 102px; }
+.cyber-particle-2 { x: 149px; y: 152px; }
+.cyber-particle-3 { x: 76px; y: 51px; }
+.cyber-particle-4 { x: 111px; y: 203px; }
+.cyber-particle-5 { x: 114px; y: 76px; }
+.cyber-particle-6 { x: 73px; y: 178px; }
+
+.cyber-particle-1 { animation-name: cyber-particle-float-1; animation-delay: 0.00s; }
+.cyber-particle-2 { animation-name: cyber-particle-float-2; animation-delay: 0.34s; }
+.cyber-particle-3 { animation-name: cyber-particle-float-3; animation-delay: 0.68s; }
+.cyber-particle-4 { animation-name: cyber-particle-float-4; animation-delay: 1.02s; }
+.cyber-particle-5 { animation-name: cyber-particle-float-5; animation-delay: 1.36s; }
+.cyber-particle-6 { animation-name: cyber-particle-float-6; animation-delay: 1.70s; }
 
 .cyber-corner
 {
-	width: 16px;
-	height: 16px;
+	width: 15px;
+	height: 15px;
 	ignore-parent-flow: true;
-	border: 2px solid rgba(92, 103, 255, 0.34);
+	border: 2px solid rgba(92, 103, 255, 0.30);
 	z-index: 9;
 	transition-property: border, box-shadow;
 	transition-duration: 0.30s;
 }
 
-.cyber-corner-1 { x: 11px; y: 11px; border-right: 0px; border-bottom: 0px; }
-.cyber-corner-2 { x: 199px; y: 11px; border-left: 0px; border-bottom: 0px; }
-.cyber-corner-3 { x: 11px; y: 275px; border-right: 0px; border-top: 0px; }
-.cyber-corner-4 { x: 199px; y: 275px; border-left: 0px; border-top: 0px; }
+.cyber-corner-1 { x: 10px; y: 10px; border-right: 0px; border-bottom: 0px; }
+.cyber-corner-2 { x: 165px; y: 10px; border-left: 0px; border-bottom: 0px; }
+.cyber-corner-3 { x: 10px; y: 229px; border-right: 0px; border-top: 0px; }
+.cyber-corner-4 { x: 165px; y: 229px; border-left: 0px; border-top: 0px; }
 
 .cyber-tracker:hover #CyberCard .cyber-corner
 {
-	border-color: rgba(92, 103, 255, 0.86);
-	box-shadow: rgba(92, 103, 255, 0.50) 0px 0px 10px 0px;
+	border-color: rgba(92, 103, 255, 0.72);
+	box-shadow: rgba(92, 103, 255, 0.28) 0px 0px 6px 0px;
 }
 
 .cyber-scan-line
 {
 	width: 100%;
-	height: 70px;
+	height: 100%;
 	ignore-parent-flow: true;
 	z-index: 7;
-	background-color: gradient(linear, 0% 0%, 0% 100%, from(rgba(92, 103, 255, 0)), color-stop(0.50, rgba(92, 103, 255, 0.12)), to(rgba(92, 103, 255, 0)));
+	background-color: gradient(linear, 0% 0%, 0% 100%, from(rgba(92, 103, 255, 0)), color-stop(0.50, rgba(92, 103, 255, 0.10)), to(rgba(92, 103, 255, 0)));
 	animation-name: cyber-scan-move;
 	animation-duration: 2s;
 	animation-timing-function: linear;
@@ -408,50 +449,50 @@
 
 @keyframes 'cyber-scan-move'
 {
-	0% { transform: translateY(-75px); }
-	100% { transform: translateY(310px); }
+	0% { transform: translateY(-254px); }
+	100% { transform: translateY(254px); }
 }
 
 @keyframes 'cyber-particle-float-1'
 {
-	0% { transform: translateX(0px) translateY(0px); opacity: 0; }
-	50% { opacity: 1; }
-	100% { transform: translateX(36px) translateY(-36px); opacity: 0; }
+	0% { transform: translate3d(0px, 0px, 0px); opacity: 0; }
+	50% { opacity: 0.86; }
+	100% { transform: translate3d(30px, -30px, 0px); opacity: 0; }
 }
 
 @keyframes 'cyber-particle-float-2'
 {
-	0% { transform: translateX(0px) translateY(0px); opacity: 0; }
-	50% { opacity: 1; }
-	100% { transform: translateX(-36px) translateY(-36px); opacity: 0; }
+	0% { transform: translate3d(0px, 0px, 0px); opacity: 0; }
+	50% { opacity: 0.86; }
+	100% { transform: translate3d(-30px, -30px, 0px); opacity: 0; }
 }
 
 @keyframes 'cyber-particle-float-3'
 {
-	0% { transform: translateX(0px) translateY(0px); opacity: 0; }
-	50% { opacity: 1; }
-	100% { transform: translateX(18px) translateY(36px); opacity: 0; }
+	0% { transform: translate3d(0px, 0px, 0px); opacity: 0; }
+	50% { opacity: 0.86; }
+	100% { transform: translate3d(15px, 30px, 0px); opacity: 0; }
 }
 
 @keyframes 'cyber-particle-float-4'
 {
-	0% { transform: translateX(0px) translateY(0px); opacity: 0; }
-	50% { opacity: 1; }
-	100% { transform: translateX(-18px) translateY(36px); opacity: 0; }
+	0% { transform: translate3d(0px, 0px, 0px); opacity: 0; }
+	50% { opacity: 0.86; }
+	100% { transform: translate3d(-15px, 30px, 0px); opacity: 0; }
 }
 
 @keyframes 'cyber-particle-float-5'
 {
-	0% { transform: translateX(0px) translateY(0px); opacity: 0; }
-	50% { opacity: 1; }
-	100% { transform: translateX(36px) translateY(18px); opacity: 0; }
+	0% { transform: translate3d(0px, 0px, 0px); opacity: 0; }
+	50% { opacity: 0.86; }
+	100% { transform: translate3d(30px, 15px, 0px); opacity: 0; }
 }
 
 @keyframes 'cyber-particle-float-6'
 {
-	0% { transform: translateX(0px) translateY(0px); opacity: 0; }
-	50% { opacity: 1; }
-	100% { transform: translateX(-36px) translateY(18px); opacity: 0; }
+	0% { transform: translate3d(0px, 0px, 0px); opacity: 0; }
+	50% { opacity: 0.86; }
+	100% { transform: translate3d(-30px, 15px, 0px); opacity: 0; }
 }
 
 .swift-hud-header
