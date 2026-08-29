@@ -10,6 +10,8 @@ server, with no Hammer workflow or pre-placed map entity.
 
 ![CustomHudProbeSW2 HUD displayed in Counter-Strike 2](assets/Snipaste_2026-08-27_12-52-37.png)
 
+[View the complete Card / Gallery / Flip showcase](docs/SHOWCASE.md).
+
 ## What it validates
 
 - `!chud_spawn menu` loads the button-menu layout into the single probe entity; omitting the argument defaults to `menu`.

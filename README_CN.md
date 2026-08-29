@@ -9,6 +9,8 @@
 
 ![CustomHudProbeSW2 HUD 在 Counter-Strike 2 中显示](assets/Snipaste_2026-08-27_12-52-37.png)
 
+[查看完整的 Card / Gallery / Flip 效果展示](docs/SHOWCASE_CN.md)。
+
 ## 已验证的能力
 
 - `!chud_spawn menu`：在唯一探针实体中加载并显示按钮菜单 layout；省略参数时默认使用 `menu`。
