@@ -9,7 +9,7 @@ namespace CustomHudProbeSW2;
 
 [PluginMetadata(
     Id = "CustomHudProbeSW2",
-    Version = "0.3.0",
+    Version = "0.4.0",
     Name = "Custom HUD Probe",
     Author = "Swift Menu PoC",
     Description = "Loads one of several CS2 custom_hud_layout resources into a single probe entity.",
@@ -21,12 +21,15 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
     private const string MenuTargetName = "swift_menu_custom_hud";
     private const string CardTargetName = "swift_cyber_card_custom_hud";
     private const string GalleryTargetName = "swift_hover3d_gallery_custom_hud";
+    private const string FlipTargetName = "swift_flip_card_custom_hud";
     private const string MenuLayoutResource = "panorama/layout/custom_game/swift_menu_custom_hud.xml";
     private const string CardLayoutResource = "panorama/layout/custom_game/cyber_card_custom_hud.xml";
     private const string GalleryLayoutResource = "panorama/layout/custom_game/hover3d_gallery_custom_hud.xml";
+    private const string FlipLayoutResource = "panorama/layout/custom_game/flip_card_custom_hud.xml";
     private const string MenuDialogPanelId = "dialog";
     private const string CardDialogPanelId = "card_dialog";
     private const string GalleryDialogPanelId = "gallery_dialog";
+    private const string FlipDialogPanelId = "flip_card_dialog";
     private const string HiddenClass = "SwiftHudHidden";
     private const string AccentClass = "SwiftHudAccent";
 
@@ -47,7 +50,7 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
                 Logger.LogError(exception, "[CustomHudProbeSW2] Custom HUD click bridge callback failed."));
 
             Logger.LogInformation(
-                "[CustomHudProbeSW2] Native Custom HUD bridge ready (hotReload={HotReload}). Use !chud_spawn <menu|card|gallery>.",
+                "[CustomHudProbeSW2] Native Custom HUD bridge ready (hotReload={HotReload}). Use !chud_spawn <menu|card|gallery|flip>.",
                 hotReload);
         }
         catch (Exception exception)
@@ -68,13 +71,13 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
         Logger.LogInformation("[CustomHudProbeSW2] Unloaded.");
     }
 
-    [Command("chud_spawn", registerRaw: true, helpText: "Load one Custom HUD layout: chud_spawn <menu|card|gallery>.")]
+    [Command("chud_spawn", registerRaw: true, helpText: "Load one Custom HUD layout: chud_spawn <menu|card|gallery|flip>.")]
     public void SpawnCommand(ICommandContext context)
     {
         var modeText = context.Args.Length > 0 ? context.Args[0] : "menu";
         if (!TryParseMode(modeText, out var requestedMode))
         {
-            context.Reply("[CustomHudProbeSW2] Usage: !chud_spawn <menu|card|gallery>.");
+            context.Reply("[CustomHudProbeSW2] Usage: !chud_spawn <menu|card|gallery|flip>.");
             return;
         }
 
@@ -110,7 +113,7 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
 
             var openedHuds = OpenHudForConnectedPlayers();
             context.Reply($"[CustomHudProbeSW2] Loaded {ModeName(requestedMode)} in entity #{entity.Index}: {spec.LayoutResource}; opened {openedHuds} HUD(s).");
-            context.Reply("[CustomHudProbeSW2] Switch with !chud_spawn menu, !chud_spawn card, or !chud_spawn gallery; only one probe entity is kept alive.");
+            context.Reply("[CustomHudProbeSW2] Switch with !chud_spawn menu, !chud_spawn card, !chud_spawn gallery, or !chud_spawn flip; only one probe entity is kept alive.");
             Logger.LogInformation(
                 "[CustomHudProbeSW2] Loaded mode={Mode} entity={EntityIndex} target={TargetName} layout={LayoutResource}; opened={OpenedHuds}.",
                 ModeName(requestedMode),
@@ -139,7 +142,7 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
 
         if (!TryGetLayoutAddress(out _) || _activeMode == HudMode.None)
         {
-            context.Reply("[CustomHudProbeSW2] The probe is inactive. Use !chud_spawn <menu|card|gallery> first.");
+            context.Reply("[CustomHudProbeSW2] The probe is inactive. Use !chud_spawn <menu|card|gallery|flip> first.");
             return;
         }
 
@@ -190,7 +193,7 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
             return;
         }
 
-        context.Reply("[CustomHudProbeSW2] Probe inactive. Use !chud_spawn <menu|card|gallery>.");
+        context.Reply("[CustomHudProbeSW2] Probe inactive. Use !chud_spawn <menu|card|gallery|flip>.");
     }
 
     private int OpenHudForConnectedPlayers()
@@ -371,6 +374,11 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
             case "cyber":
                 mode = HudMode.Card;
                 return true;
+            case "flip":
+            case "flipcard":
+            case "turn":
+                mode = HudMode.Flip;
+                return true;
             case "gallery":
             case "hover3d":
             case "images":
@@ -387,6 +395,7 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
         HudMode.Menu => new LayoutSpec(MenuTargetName, MenuLayoutResource, MenuDialogPanelId),
         HudMode.Card => new LayoutSpec(CardTargetName, CardLayoutResource, CardDialogPanelId),
         HudMode.Gallery => new LayoutSpec(GalleryTargetName, GalleryLayoutResource, GalleryDialogPanelId),
+        HudMode.Flip => new LayoutSpec(FlipTargetName, FlipLayoutResource, FlipDialogPanelId),
         _ => throw new InvalidOperationException("No Custom HUD layout is active.")
     };
 
@@ -395,6 +404,7 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
         HudMode.Menu => "menu",
         HudMode.Card => "card",
         HudMode.Gallery => "gallery",
+        HudMode.Flip => "flip",
         _ => "none"
     };
 
@@ -403,7 +413,8 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
         None,
         Menu,
         Card,
-        Gallery
+        Gallery,
+        Flip
     }
 
     private readonly record struct LayoutSpec(string TargetName, string LayoutResource, string DialogPanelId);

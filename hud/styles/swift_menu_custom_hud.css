@@ -27,6 +27,18 @@
 	opacity: 1;
 }
 
+#flip_card_dialog
+{
+	width: 226px;
+	height: 302px;
+	horizontal-align: center;
+	vertical-align: center;
+	overflow: noclip;
+	transition-property: opacity;
+	transition-duration: 0.12s;
+	opacity: 1;
+}
+
 #gallery_dialog
 {
 	width: 856px;
@@ -41,6 +53,7 @@
 
 #dialog.SwiftHudHidden,
 #card_dialog.SwiftHudHidden,
+#flip_card_dialog.SwiftHudHidden,
 #gallery_dialog.SwiftHudHidden
 {
 	visibility: collapse;
@@ -70,6 +83,150 @@
 {
 	border-color: rgba(130, 215, 255, 0.55);
 	border-left-color: #82d7ff;
+}
+
+/* Adapted from https://uiverse.io/joe-watson-sbf/little-goat-24 */
+.flip-card-stage
+{
+	width: 226px;
+	height: 302px;
+	horizontal-align: center;
+	vertical-align: center;
+	perspective: 1000px;
+	perspective-origin: 50% 50%;
+	overflow: noclip;
+}
+
+.flip-card-inner
+{
+	width: 226px;
+	height: 302px;
+	horizontal-align: center;
+	vertical-align: center;
+	overflow: noclip;
+	transform-origin: 50% 50%;
+}
+
+/* Rotate a padded noclip wrapper so the rounded surface is never its own 3D clip boundary. */
+.flip-card-rotor
+{
+	width: 226px;
+	height: 302px;
+	ignore-parent-flow: true;
+	overflow: noclip;
+	transform-origin: 50% 50%;
+	transition-property: transform, opacity;
+	transition-duration: 0.80s, 0.01s;
+	transition-delay: 0s, 0.395s;
+	transition-timing-function: ease-in-out, linear;
+	transition-high-framerate: true;
+}
+
+.flip-card-face
+{
+	width: 190px;
+	height: 254px;
+	horizontal-align: center;
+	vertical-align: center;
+	border: 1px solid #ff7f50;
+	border-radius: 16px;
+	box-shadow: rgba(0, 0, 0, 0.20) 0px 8px 14px 0px;
+	overflow: clip;
+}
+
+.flip-card-front-rotor
+{
+	transform: rotateY(0deg);
+	opacity: 1;
+}
+
+.flip-card-back-rotor
+{
+	transform: rotateY(-180deg);
+	opacity: 0;
+}
+
+/* The 0.01s opacity transition is delayed to the 90-degree midpoint, avoiding face cross-fade. */
+.flip-card-stage:hover .flip-card-front-rotor
+{
+	transform: rotateY(180deg);
+	opacity: 0;
+}
+
+.flip-card-stage:hover .flip-card-back-rotor
+{
+	transform: rotateY(0deg);
+	opacity: 1;
+}
+
+.flip-card-front
+{
+	background-color: gradient(linear, 0% 0%, 100% 100%, from(#ffe4c4), color-stop(0.72, #ffe4c4), to(#ffe7de));
+}
+
+.flip-card-back
+{
+	background-color: gradient(linear, 0% 0%, 100% 100%, from(#ffae91), color-stop(0.55, #ff9c7b), to(#ff7f50));
+}
+
+.flip-card-corner
+{
+	width: 72px;
+	height: 82px;
+	horizontal-align: right;
+	vertical-align: bottom;
+	ignore-parent-flow: true;
+	z-index: 1;
+}
+
+.flip-card-front .flip-card-corner
+{
+	background-color: gradient(linear, 0% 0%, 100% 100%, from(rgba(255, 156, 126, 0)), color-stop(0.49, rgba(255, 156, 126, 0)), color-stop(0.50, #ff9c7e), to(#ff9c7e));
+}
+
+.flip-card-back .flip-card-corner
+{
+	background-color: gradient(linear, 0% 0%, 100% 100%, from(rgba(255, 228, 196, 0)), color-stop(0.49, rgba(255, 228, 196, 0)), color-stop(0.50, #ffe4c4), to(#ffe4c4));
+}
+
+.flip-card-copy
+{
+	width: 100%;
+	height: fit-children;
+	vertical-align: center;
+	flow-children: down;
+	z-index: 2;
+}
+
+.flip-card-copy Label
+{
+	width: 100%;
+	font-family: 'Arial Unicode MS';
+	text-align: center;
+}
+
+.flip-card-front Label
+{
+	color: #ff7f50;
+}
+
+.flip-card-back Label
+{
+	color: white;
+}
+
+.flip-card-title
+{
+	font-size: 24px;
+	font-weight: bold;
+	text-shadow: 0px 1px 2px 1 rgba(0, 0, 0, 0.12);
+}
+
+.flip-card-hint
+{
+	margin-top: 9px;
+	font-size: 16px;
+	font-weight: normal;
 }
 
 /* The reference card is 190x254. The stage adds 18px/24px noclip gutters. */

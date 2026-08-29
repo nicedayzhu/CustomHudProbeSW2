@@ -94,7 +94,7 @@ gameinfo.gi.swift_custom_hud_layout_probe.bak
 1. 在 CS2 Workshop Tools 中启动 **Counter-Strike 2 Workshop Manager**。
 2. 点击 **New**。
 3. 选择 `swift_custom_hud_layout_probe` 作为加载项文件夹。
-4. 检查内容预览：至少必须显示 `[vxml_c]: 1 Files` 与 `[vcss_c]: 1 Files`。
+4. 检查内容预览：至少必须显示 `[vxml_c]: 4 Files` 与 `[vcss_c]: 1 Files`。
 5. 填写标题、说明、预览图和可见性，然后提交。
 
 第 4 步是决定性检查。显示这两项已编译资源，即说明 Workshop Manager 已找到 HUD 内容；无需
@@ -196,7 +196,12 @@ sw_searchpath                // 列出当前挂载的 VPK 搜索路径
 | 命令 | 结果 |
 | --- | --- |
 | `!chud_spawn` | 创建一个动态 `custom_hud_layout` 探针，并向每位已连接真人玩家打开菜单。 |
-| `!chud_open` | 为发起命令的玩家重新打开并重置菜单；探针必须已激活。 |
+| `!chud_spawn menu` | 加载按钮菜单；这是默认模式。 |
+| `!chud_spawn card` | 加载独立的 25 区域 cyber 卡片。 |
+| `!chud_spawn gallery` | 加载三图片 Hover 3D 画廊；别名为 `hover3d`、`images`。 |
+| `!chud_spawn flip` | 加载双面翻转卡片；别名为 `flipcard`、`turn`。 |
+| `!chud_open` | 为发起命令的玩家重新打开当前 HUD；探针必须已激活。 |
+| `!chud_close` | 隐藏发起命令玩家的当前 HUD，并释放输入捕获。 |
 | `!chud_status` | 报告原生桥接层是否就绪，以及探针是否处于活动状态。 |
 | `!chud_clear` | 移除活动探针，并释放已捕获的输入。 |
 
@@ -207,8 +212,8 @@ sw_searchpath                // 列出当前挂载的 VPK 搜索路径
 
 1. 用订阅了 Workshop 项的干净客户端连接测试服务器。
 2. 确认服务器已部署 `CustomHudProbeSW2`。
-3. 输入 `!chud_spawn`，确认 HUD 显示。
-4. 测试主按钮、次按钮与关闭按钮；对关闭后的菜单输入 `!chud_open`，确认仅为发起命令的玩家重新打开。
+3. 依次输入 `!chud_spawn menu`、`card`、`gallery`、`flip`，确认每个 HUD 都会替换上一模式并正确显示。
+4. 测试菜单按钮、两种 hover 卡片、画廊方向效果以及 flip 卡片正反面过渡；在 `!chud_close` 后使用 `!chud_open` 重新打开。
 5. 输入 `!chud_status`，确认报告活动实体。
 6. 输入 `!chud_clear`，确认 HUD 消失。
 

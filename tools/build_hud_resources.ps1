@@ -16,6 +16,7 @@ $sourceRoot = Join-Path $projectRoot "hud"
 $layoutPath = Join-Path $sourceRoot "layout\swift_menu_custom_hud.xml"
 $cardLayoutPath = Join-Path $sourceRoot "layout\cyber_card_custom_hud.xml"
 $galleryLayoutPath = Join-Path $sourceRoot "layout\hover3d_gallery_custom_hud.xml"
+$flipLayoutPath = Join-Path $sourceRoot "layout\flip_card_custom_hud.xml"
 $galleryImageRoot = Join-Path $sourceRoot "images\hover3d"
 $galleryImagePaths = @(1..3 | ForEach-Object { Join-Path $galleryImageRoot "card_$_.png" })
 $galleryTexturePaths = @(1..3 | ForEach-Object { Join-Path $galleryImageRoot "card_$_.vtex" })
@@ -87,7 +88,7 @@ function Write-TextNoBom {
 }
 
 function Test-HudSources {
-    $requiredSources = @($layoutPath, $cardLayoutPath, $galleryLayoutPath, $stylePath, $pluginPath, $bridgePath, $gameDataPath)
+    $requiredSources = @($layoutPath, $cardLayoutPath, $galleryLayoutPath, $flipLayoutPath, $stylePath, $pluginPath, $bridgePath, $gameDataPath)
     $requiredSources += $galleryImagePaths
     $requiredSources += $galleryTexturePaths
     foreach ($path in $requiredSources) {
@@ -97,6 +98,7 @@ function Test-HudSources {
     [xml]$menuLayout = Get-Content -Raw -LiteralPath $layoutPath
     [xml]$cardLayout = Get-Content -Raw -LiteralPath $cardLayoutPath
     [xml]$galleryLayout = Get-Content -Raw -LiteralPath $galleryLayoutPath
+    [xml]$flipLayout = Get-Content -Raw -LiteralPath $flipLayoutPath
     $allowedAttributes = @{
         "root" = @()
         "styles" = @()
@@ -107,7 +109,7 @@ function Test-HudSources {
         "Button" = @("id", "class")
     }
 
-    foreach ($layout in @($menuLayout, $cardLayout, $galleryLayout)) {
+    foreach ($layout in @($menuLayout, $cardLayout, $galleryLayout, $flipLayout)) {
         foreach ($node in $layout.SelectNodes("//*")) {
             if (-not $allowedAttributes.ContainsKey($node.Name)) {
                 throw "Custom HUD layout contains disallowed node: $($node.Name)"
@@ -134,7 +136,12 @@ function Test-HudSources {
     if (-not $galleryLayout.SelectSingleNode("//Panel[@id='gallery_dialog']")) {
         throw "Hover 3D gallery layout is missing the gallery_dialog panel."
     }
-    if ($cardLayout.SelectSingleNode("/root/scripts") -or $galleryLayout.SelectSingleNode("/root/scripts")) {
+    if (-not $flipLayout.SelectSingleNode("//Panel[@id='flip_card_dialog']")) {
+        throw "Flip card layout is missing the flip_card_dialog panel."
+    }
+    if ($cardLayout.SelectSingleNode("/root/scripts") -or
+        $galleryLayout.SelectSingleNode("/root/scripts") -or
+        $flipLayout.SelectSingleNode("/root/scripts")) {
         throw "CCSCustomHudLayout validation disallows a scripts node."
     }
 
@@ -149,6 +156,9 @@ function Test-HudSources {
     }
     if ($galleryLayout.SelectNodes("//Button").Count -ne 0) {
         throw "Hover 3D gallery layout must not contain menu Buttons."
+    }
+    if ($flipLayout.SelectNodes("//Button").Count -ne 0) {
+        throw "Flip card layout must not contain menu Buttons."
     }
     $trackerCount = $cardLayout.SelectNodes("//Panel[contains(concat(' ', normalize-space(@class), ' '), ' cyber-tracker ')]").Count
     if ($trackerCount -ne 25) {
@@ -181,6 +191,37 @@ function Test-HudSources {
     $cardTrackerAncestors = $cyberCard.SelectNodes("ancestor::Panel[contains(concat(' ', normalize-space(@class), ' '), ' cyber-tracker ')]").Count
     if ($cardTrackerAncestors -ne 25) {
         throw "The shared CyberCard must be a descendant of all 25 trackers; found $cardTrackerAncestors ancestors."
+    }
+
+    if ($flipLayout.SelectNodes("//Panel[contains(concat(' ', normalize-space(@class), ' '), ' flip-card-stage ')]").Count -ne 1) {
+        throw "Flip card layout must contain exactly one flip-card-stage panel."
+    }
+    $flipInner = $flipLayout.SelectSingleNode("//Panel[@id='FlipCardInner']")
+    if (-not $flipInner -or $flipLayout.SelectNodes("//Panel[@id='FlipCardInner']").Count -ne 1) {
+        throw "Flip card layout must contain exactly one FlipCardInner panel."
+    }
+    $flipFrontRotor = $flipInner.SelectSingleNode("./Panel[contains(concat(' ', normalize-space(@class), ' '), ' flip-card-front-rotor ')]")
+    $flipBackRotor = $flipInner.SelectSingleNode("./Panel[contains(concat(' ', normalize-space(@class), ' '), ' flip-card-back-rotor ')]")
+    if (-not $flipFrontRotor -or -not $flipBackRotor -or
+        $flipInner.SelectNodes("./Panel[contains(concat(' ', normalize-space(@class), ' '), ' flip-card-rotor ')]").Count -ne 2) {
+        throw "FlipCardInner must directly own one front rotor and one back rotor."
+    }
+    $flipFront = $flipFrontRotor.SelectSingleNode("./Panel[contains(concat(' ', normalize-space(@class), ' '), ' flip-card-front ')]")
+    $flipBack = $flipBackRotor.SelectSingleNode("./Panel[contains(concat(' ', normalize-space(@class), ' '), ' flip-card-back ')]")
+    if (-not $flipFront -or -not $flipBack -or
+        $flipFrontRotor.SelectNodes("./Panel[contains(concat(' ', normalize-space(@class), ' '), ' flip-card-face ')]").Count -ne 1 -or
+        $flipBackRotor.SelectNodes("./Panel[contains(concat(' ', normalize-space(@class), ' '), ' flip-card-face ')]").Count -ne 1) {
+        throw "Each flip-card rotor must directly own exactly one rounded face."
+    }
+    foreach ($flipFace in @($flipFront, $flipBack)) {
+        if ($flipFace.SelectNodes("./Panel[contains(concat(' ', normalize-space(@class), ' '), ' flip-card-corner ')]").Count -ne 1) {
+            throw "Each flip-card face must directly own exactly one corner accent."
+        }
+    }
+    foreach ($expectedCopy in @("FLIP CARD", "Hover Me", "BACK", "Leave Me")) {
+        if (-not $flipLayout.SelectSingleNode("//Label[@text='$expectedCopy']")) {
+            throw "Flip card layout is missing label text: $expectedCopy"
+        }
     }
 
     $galleryStageCount = $galleryLayout.SelectNodes("//Panel[contains(concat(' ', normalize-space(@class), ' '), ' hover3d-card-stage ')]").Count
@@ -290,9 +331,14 @@ function Test-HudSources {
             throw "Custom HUD probe does not use required native click API: $api"
         }
     }
-    foreach ($galleryBinding in @("GalleryTargetName", "GalleryLayoutResource", "GalleryDialogPanelId", "HudMode.Gallery", "<menu|card|gallery>")) {
+    foreach ($galleryBinding in @("GalleryTargetName", "GalleryLayoutResource", "GalleryDialogPanelId", "HudMode.Gallery", "<menu|card|gallery|flip>")) {
         if ($pluginSource -notmatch [regex]::Escape($galleryBinding)) {
             throw "Custom HUD probe is missing Hover 3D gallery routing: $galleryBinding"
+        }
+    }
+    foreach ($flipBinding in @("FlipTargetName", "FlipLayoutResource", "FlipDialogPanelId", "HudMode.Flip", 'case "flip"')) {
+        if ($pluginSource -notmatch [regex]::Escape($flipBinding)) {
+            throw "Custom HUD probe is missing flip card routing: $flipBinding"
         }
     }
     foreach ($forbiddenApi in @("CCSPointScriptEntity", "point_script", "cs_script", "OnCustomHudClicked")) {
@@ -304,6 +350,7 @@ function Test-HudSources {
     $styleSource = Get-Content -Raw -LiteralPath $stylePath
     if ($styleSource -notmatch [regex]::Escape("#dialog.SwiftHudHidden") -or
         $styleSource -notmatch [regex]::Escape("#gallery_dialog.SwiftHudHidden") -or
+        $styleSource -notmatch [regex]::Escape("#flip_card_dialog.SwiftHudHidden") -or
         $styleSource -notmatch [regex]::Escape("visibility: collapse")) {
         throw "Custom HUD stylesheet does not provide the non-interactive hidden state."
     }
@@ -318,6 +365,29 @@ function Test-HudSources {
     }
     if ($styleSource -notmatch [regex]::Escape(".cyber-tracker:hover #CyberCard")) {
         throw "Custom HUD stylesheet is missing the shared-card hover selector."
+    }
+    foreach ($flipSelector in @(".flip-card-stage:hover .flip-card-front-rotor", ".flip-card-stage:hover .flip-card-back-rotor")) {
+        if ($styleSource -notmatch [regex]::Escape($flipSelector)) {
+            throw "Custom HUD stylesheet is missing the flip-card hover selector: $flipSelector"
+        }
+    }
+    if ($styleSource -notmatch "(?s)\.flip-card-front-rotor\s*\{[^}]*transform:\s*rotateY\(0deg\);[^}]*opacity:\s*1;" -or
+        $styleSource -notmatch "(?s)\.flip-card-back-rotor\s*\{[^}]*transform:\s*rotateY\(-180deg\);[^}]*opacity:\s*0;") {
+        throw "Flip card rotors must start in opposite rotation and visibility states."
+    }
+    if ($styleSource -notmatch "(?s)\.flip-card-rotor\s*\{[^}]*width:\s*226px;[^}]*height:\s*302px;[^}]*overflow:\s*noclip;[^}]*transition-property:\s*transform, opacity;[^}]*transition-duration:\s*0\.80s, 0\.01s;[^}]*transition-delay:\s*0s, 0\.395s;") {
+        throw "Flip card rotors must use the padded noclip surface and midpoint opacity switch."
+    }
+    if ($styleSource -notmatch "(?s)\.flip-card-face\s*\{[^}]*width:\s*190px;[^}]*height:\s*254px;[^}]*horizontal-align:\s*center;[^}]*vertical-align:\s*center;[^}]*overflow:\s*clip;") {
+        throw "Flip card faces must remain centered clipped surfaces inside the padded rotors."
+    }
+    foreach ($cornerSelector in @(".flip-card-front .flip-card-corner", ".flip-card-back .flip-card-corner")) {
+        if ($styleSource -notmatch [regex]::Escape($cornerSelector)) {
+            throw "Custom HUD stylesheet is missing the reference corner accent: $cornerSelector"
+        }
+    }
+    if ($styleSource -match "(?s)\.flip-card-stage:hover\s+\.flip-card-[^{]+\{[^}]*brightness:") {
+        throw "Flip card hover must not add brightness because it causes a return-state luminance jump."
     }
     foreach ($trackerIndex in 1..25) {
         if ($styleSource -notmatch [regex]::Escape("#CyberTracker${trackerIndex}:hover #CyberCard")) {
@@ -389,6 +459,7 @@ function Compile-HudResources {
     Write-TextNoBom -Path (Join-Path $contentLayoutDir "swift_menu_custom_hud.vxml") -Value (Get-Content -Raw -LiteralPath $layoutPath)
     Write-TextNoBom -Path (Join-Path $contentLayoutDir "cyber_card_custom_hud.vxml") -Value (Get-Content -Raw -LiteralPath $cardLayoutPath)
     Write-TextNoBom -Path (Join-Path $contentLayoutDir "hover3d_gallery_custom_hud.vxml") -Value (Get-Content -Raw -LiteralPath $galleryLayoutPath)
+    Write-TextNoBom -Path (Join-Path $contentLayoutDir "flip_card_custom_hud.vxml") -Value (Get-Content -Raw -LiteralPath $flipLayoutPath)
     Write-TextNoBom -Path (Join-Path $contentStyleDir "swift_menu_custom_hud.vcss") -Value (Get-Content -Raw -LiteralPath $stylePath)
     foreach ($sourceImage in $galleryImagePaths) {
         Copy-Item -LiteralPath $sourceImage -Destination (Join-Path $contentImageDir (Split-Path -Leaf $sourceImage)) -Force
@@ -413,6 +484,7 @@ function Compile-HudResources {
         -i (Join-Path $contentLayoutDir "swift_menu_custom_hud.vxml") `
         -i (Join-Path $contentLayoutDir "cyber_card_custom_hud.vxml") `
         -i (Join-Path $contentLayoutDir "hover3d_gallery_custom_hud.vxml") `
+        -i (Join-Path $contentLayoutDir "flip_card_custom_hud.vxml") `
         -i (Join-Path $contentImageDir "card_1.vtex") `
         -i (Join-Path $contentImageDir "card_2.vtex") `
         -i (Join-Path $contentImageDir "card_3.vtex") `
@@ -425,6 +497,7 @@ function Compile-HudResources {
         (Join-Path $gameLayoutDir "swift_menu_custom_hud.vxml_c"),
         (Join-Path $gameLayoutDir "cyber_card_custom_hud.vxml_c"),
         (Join-Path $gameLayoutDir "hover3d_gallery_custom_hud.vxml_c"),
+        (Join-Path $gameLayoutDir "flip_card_custom_hud.vxml_c"),
         (Join-Path $gameStyleDir "swift_menu_custom_hud.vcss_c"),
         (Join-Path $gameImageDir "card_1.vtex_c"),
         (Join-Path $gameImageDir "card_2.vtex_c"),
@@ -457,6 +530,7 @@ function Pack-HudVpk {
             "panorama\layout\custom_game\swift_menu_custom_hud.vxml_c",
             "panorama\layout\custom_game\cyber_card_custom_hud.vxml_c",
             "panorama\layout\custom_game\hover3d_gallery_custom_hud.vxml_c",
+            "panorama\layout\custom_game\flip_card_custom_hud.vxml_c",
             "panorama\styles\custom_game\swift_menu_custom_hud.vcss_c",
             "panorama\images\custom_game\hover3d\card_1.vtex_c",
             "panorama\images\custom_game\hover3d\card_2.vtex_c",
@@ -482,6 +556,7 @@ function Pack-HudVpk {
             "swift_menu_custom_hud.vxml_c",
             "cyber_card_custom_hud.vxml_c",
             "hover3d_gallery_custom_hud.vxml_c",
+            "flip_card_custom_hud.vxml_c",
             "swift_menu_custom_hud.vcss_c",
             "card_1.vtex_c",
             "card_2.vtex_c",

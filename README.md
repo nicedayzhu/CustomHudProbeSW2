@@ -15,6 +15,7 @@ server, with no Hammer workflow or pre-placed map entity.
 - `!chud_spawn menu` loads the button-menu layout into the single probe entity; omitting the argument defaults to `menu`.
 - `!chud_spawn card` switches the single probe entity to the standalone 3D-card layout.
 - `!chud_spawn gallery` switches to a three-image gallery with independent eight-zone 3D hover and moving shine effects.
+- `!chud_spawn flip` switches to the new coral/bisque two-sided flip card; aliases are `flipcard` and `turn`.
 - `!chud_open` reopens the currently loaded HUD for the issuing player.
 - `!chud_close` hides the current HUD and releases the issuing player's input capture.
 - `!chud_status` reports the entity tracked by the plugin.
@@ -37,6 +38,11 @@ The Hover 3D gallery is adapted from the
 [daisyUI Hover 3D Card example](https://daisyui.com/components/hover-3d/). Its
 three demo images are the stock `card-1.webp`, `card-2.webp`, and `card-3.webp`
 assets referenced by that example and converted locally to Panorama textures.
+
+The flip card is adapted from
+[Uiverse.io `little-goat-24` by `joe-watson-sbf`](https://uiverse.io/joe-watson-sbf/little-goat-24).
+Its browser HTML/CSS was translated to the declarative Panorama Custom HUD
+surface while retaining the original dimensions, palette, and hover behavior.
 
 ## Quick start: local override test
 
@@ -88,6 +94,7 @@ Then join the test server and use these chat commands:
 | `!chud_spawn menu` | Loads the button menu into the single probe entity; omitting the argument defaults to `menu`. |
 | `!chud_spawn card` | Replaces the old mode and loads the standalone 3D card into the single probe entity. |
 | `!chud_spawn gallery` | Replaces the old mode and loads the three-image Hover 3D gallery. Aliases: `hover3d`, `images`. |
+| `!chud_spawn flip` | Replaces the old mode and loads the two-sided flip card. Aliases: `flipcard`, `turn`. |
 | `!chud_open` | Reopens the current HUD for the invoking player; the probe must already exist. |
 | `!chud_close` | Hides the current HUD and releases the invoking player's input capture. |
 | `!chud_status` | Reports the bridge and probe entity state. |

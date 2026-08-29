@@ -6,6 +6,7 @@ This directory owns the source layouts and shared stylesheet for `CustomHudProbe
 layout/swift_menu_custom_hud.xml
 layout/cyber_card_custom_hud.xml
 layout/hover3d_gallery_custom_hud.xml
+layout/flip_card_custom_hud.xml
 images/hover3d/card_1.png + card_1.vtex
 images/hover3d/card_2.png + card_2.vtex
 images/hover3d/card_3.png + card_3.vtex
@@ -32,6 +33,17 @@ shadow displacement, a small hover scale, and a moving radial shine to the
 shared panel. The three source images are the stock demo images linked by the
 daisyUI example, converted to local PNG/VTEX assets so the HUD has no runtime
 network dependency.
+
+The flip-card layout adapts
+[Uiverse.io `little-goat-24` by `joe-watson-sbf`](https://uiverse.io/joe-watson-sbf/little-goat-24)
+to the declarative Custom HUD surface. Panorama does not expose the browser combination of
+`transform-style: preserve-3d` and `backface-visibility` here, so the front and
+back faces use synchronized opposite Y rotations on padded, unclipped wrappers.
+The visible face switches at the 90-degree midpoint instead of cross-fading, so
+the rounded surface does not produce a rectangular alpha overlay or clip during
+the turn. This retains the 190-by-254 footprint, 800 ms hover flip, coral border,
+shadow, warm face colors, and lower-right corner accents without adding VJS or
+disallowed layout attributes.
 
 Use the project-owned build entry point to validate, compile, pack, or install
 these resources:

@@ -102,7 +102,7 @@ when the target `game\csgo` directory is not under `-Cs2Root`.
 1. Start **Counter-Strike 2 Workshop Manager** from CS2 Workshop Tools.
 2. Click **New**.
 3. Select `swift_custom_hud_layout_probe` as the addon folder.
-4. Inspect the contents preview. It must show at least `[vxml_c]: 1 Files` and
+4. Inspect the contents preview. It must show at least `[vxml_c]: 4 Files` and
    `[vcss_c]: 1 Files`.
 5. Enter title, description, preview image, and visibility, then submit.
 
@@ -216,7 +216,12 @@ Use these commands in player chat after the plugin has loaded:
 | Command | Result |
 | --- | --- |
 | `!chud_spawn` | Creates one dynamic `custom_hud_layout` probe and opens a menu for each connected human player. |
-| `!chud_open` | Reopens and resets the menu for the player who issues it. The probe must already be active. |
+| `!chud_spawn menu` | Loads the button menu; this is the default mode. |
+| `!chud_spawn card` | Loads the standalone 25-zone cyber card. |
+| `!chud_spawn gallery` | Loads the three-image Hover 3D gallery. Aliases: `hover3d`, `images`. |
+| `!chud_spawn flip` | Loads the two-sided flip card. Aliases: `flipcard`, `turn`. |
+| `!chud_open` | Reopens the current HUD for the player who issues it. The probe must already be active. |
+| `!chud_close` | Hides the current HUD and releases input capture for the issuing player. |
 | `!chud_status` | Reports whether the native bridge is ready and whether a probe is active. |
 | `!chud_clear` | Removes the active probe and releases its captured input. |
 
@@ -228,9 +233,10 @@ spawn on an unverified `server.dll` build.
 
 1. Connect a clean client subscribed to the Workshop item to the test server.
 2. Confirm the server has `CustomHudProbeSW2` deployed.
-3. Run `!chud_spawn` and confirm the HUD appears.
-4. Test primary, secondary, and close buttons; use `!chud_open` to reopen the
-   closed menu for the issuing player.
+3. Run `!chud_spawn menu`, `card`, `gallery`, and `flip`; confirm each HUD replaces
+   the previous mode and appears for the connected client.
+4. Test menu buttons, both hover-card effects, gallery directions, and the flip
+   card's front/back transition; use `!chud_open` after `!chud_close`.
 5. Run `!chud_status` and confirm an active entity is reported.
 6. Run `!chud_clear` and confirm the HUD disappears.
 

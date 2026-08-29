@@ -1,0 +1,37 @@
+<root>
+	<!--
+		Flip card effect adapted from Uiverse.io by joe-watson-sbf:
+		https://uiverse.io/joe-watson-sbf/little-goat-24
+		The two faces cross-rotate because CCSCustomHudLayout does not expose
+		browser backface-visibility or a JavaScript-driven DOM.
+	-->
+	<styles>
+		<include src="s2r://panorama/styles/custom_game/swift_menu_custom_hud.vcss_c" />
+	</styles>
+	<Panel class="swift-hud-root" hittest="false">
+		<Panel id="flip_card_dialog" class="flip-card-dialog SwiftHudHidden" hittest="true">
+			<Panel class="flip-card-stage" hittest="true">
+				<Panel id="FlipCardInner" class="flip-card-inner" hittest="false">
+					<Panel class="flip-card-rotor flip-card-front-rotor" hittest="false">
+						<Panel class="flip-card-face flip-card-front" hittest="false">
+							<Panel class="flip-card-corner" hittest="false" />
+							<Panel class="flip-card-copy" hittest="false">
+								<Label class="flip-card-title" text="FLIP CARD" hittest="false" />
+								<Label class="flip-card-hint" text="Hover Me" hittest="false" />
+							</Panel>
+						</Panel>
+					</Panel>
+					<Panel class="flip-card-rotor flip-card-back-rotor" hittest="false">
+						<Panel class="flip-card-face flip-card-back" hittest="false">
+							<Panel class="flip-card-corner" hittest="false" />
+							<Panel class="flip-card-copy" hittest="false">
+								<Label class="flip-card-title" text="BACK" hittest="false" />
+								<Label class="flip-card-hint" text="Leave Me" hittest="false" />
+							</Panel>
+						</Panel>
+					</Panel>
+				</Panel>
+			</Panel>
+		</Panel>
+	</Panel>
+</root>
