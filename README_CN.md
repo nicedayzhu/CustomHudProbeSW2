@@ -31,6 +31,10 @@
 [laper32/PanoramaLayout](https://github.com/laper32/PanoramaLayout)，尤其是其通过
 `CS_UM_CustomHudClicked` 接收点击的流程。感谢作者公开分享这一实现。
 
+独立赛博卡片移植自 Uiverse.io 用户 `00Kubi` 的
+[`cowardly-eagle-56` 示例](https://uiverse.io/00Kubi/cowardly-eagle-56)，其 HTML/CSS
+交互与视觉层已转换为无脚本的 Panorama Custom HUD 实现。
+
 Hover 3D 画廊移植自
 [daisyUI Hover 3D Card 示例](https://daisyui.com/components/hover-3d/)。三张演示图片来自该示例引用的
 `card-1.webp`、`card-2.webp` 与 `card-3.webp` 素材，并已转换成本地 Panorama 纹理。
@@ -113,3 +117,10 @@ Workshop Addon，使服务器与玩家客户端取得 HUD 资源。配置和验�
 1.4.6-beta.8。桥接特征码统一放在插件的
 `resources/gamedata/signatures.jsonc`，不再硬编码于 C#；CS2 更新后必须重新验证该文件，
 否则 HUD 不会创建。
+
+## 开源协议
+
+项目原创源代码、脚本、配置与文档采用 [MIT License](LICENSE)，版权归 2026
+`niceday_zhu` 所有。引用或移植的第三方样式保留其原始声明；随项目提供的游戏截图、
+Gallery 演示图片以及 Valve 运行时资源不随项目 MIT 协议重新授权。完整授权范围与来源请参阅
+[第三方声明](THIRD_PARTY_NOTICES.md)。

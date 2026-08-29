@@ -13,6 +13,11 @@ images/hover3d/card_3.png + card_3.vtex
 styles/swift_menu_custom_hud.css
 ```
 
+The layouts and stylesheet include adaptations from MIT-licensed reference
+implementations, while the gallery demo images have separate media-rights
+considerations. See [`../THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md)
+before redistributing the HUD resource package.
+
 The menu layout keeps fixed button IDs. Per-player text, CSS classes, input
 capture, and native click dispatch are owned by the plugin; no VJS
 `onactivate` click bridge is used. `CCSCustomHudLayout` rejects `<scripts>` and

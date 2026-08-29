@@ -36,6 +36,11 @@ The original direction for native Custom HUD button handling was informed by
 its `CS_UM_CustomHudClicked` receiver flow. Thank you to its author for
 publishing that work.
 
+The standalone Cyber Card is adapted from
+[Uiverse.io `cowardly-eagle-56` by `00Kubi`](https://uiverse.io/00Kubi/cowardly-eagle-56).
+Its HTML/CSS interaction and visual layers were translated to the script-free
+Panorama Custom HUD surface.
+
 The Hover 3D gallery is adapted from the
 [daisyUI Hover 3D Card example](https://daisyui.com/components/hover-3d/). Its
 three demo images are the stock `card-1.webp`, `card-2.webp`, and `card-3.webp`
@@ -127,3 +132,12 @@ The dynamic entity, resource path, per-player state, input capture, and native
 click receiver are implemented against SwiftlyS2 1.4.6-beta.8. A CS2 update
 requires the plugin GameData signatures to be revalidated before the HUD will
 spawn; a verified signature-only update does not require changing C#.
+
+## License
+
+Original source code, scripts, configuration, and documentation are licensed
+under the [MIT License](LICENSE), copyright 2026 `niceday_zhu`. Referenced or
+adapted third-party styles retain their upstream notices. Bundled screenshots,
+gallery demo images, and Valve runtime resources are not relicensed under the
+project MIT license. See [Third-party notices](THIRD_PARTY_NOTICES.md) for the
+complete scope and attribution details.
