@@ -27,8 +27,21 @@
 	opacity: 1;
 }
 
+#gallery_dialog
+{
+	width: 856px;
+	height: 361px;
+	horizontal-align: center;
+	vertical-align: center;
+	overflow: noclip;
+	transition-property: opacity;
+	transition-duration: 0.12s;
+	opacity: 1;
+}
+
 #dialog.SwiftHudHidden,
-#card_dialog.SwiftHudHidden
+#card_dialog.SwiftHudHidden,
+#gallery_dialog.SwiftHudHidden
 {
 	visibility: collapse;
 	opacity: 0;
@@ -494,6 +507,223 @@
 	50% { opacity: 0.86; }
 	100% { transform: translate3d(-30px, 15px, 0px); opacity: 0; }
 }
+
+/* Adapted from https://daisyui.com/components/hover-3d/ */
+.hover3d-gallery
+{
+	width: 856px;
+	height: 361px;
+	flow-children: right;
+	overflow: noclip;
+}
+
+.hover3d-card-stage
+{
+	width: 272px;
+	height: 361px;
+	perspective: 1200px;
+	perspective-origin: 50% 50%;
+	overflow: noclip;
+}
+
+.hover3d-card-stage-1,
+.hover3d-card-stage-2
+{
+	margin-right: 20px;
+}
+
+.hover3d-card-stage:hover
+{
+	z-index: 20;
+}
+
+.hover3d-tracker
+{
+	width: 272px;
+	height: 361px;
+	ignore-parent-flow: true;
+	overflow: noclip;
+	z-index: 200;
+}
+
+.hover3d-sensor
+{
+	width: 80px;
+	ignore-parent-flow: true;
+	z-index: 220;
+}
+
+.hover3d-zone-1,
+.hover3d-zone-2,
+.hover3d-zone-3
+{
+	height: 110px;
+	y: 16px;
+}
+
+.hover3d-zone-4,
+.hover3d-zone-5
+{
+	height: 109px;
+	y: 126px;
+}
+
+.hover3d-zone-6,
+.hover3d-zone-7,
+.hover3d-zone-8
+{
+	height: 110px;
+	y: 235px;
+}
+
+.hover3d-zone-1,
+.hover3d-zone-4,
+.hover3d-zone-6
+{
+	x: 16px;
+}
+
+.hover3d-zone-2,
+.hover3d-zone-7
+{
+	x: 96px;
+}
+
+.hover3d-zone-3,
+.hover3d-zone-5,
+.hover3d-zone-8
+{
+	x: 176px;
+}
+
+.hover3d-card-content
+{
+	width: 272px;
+	height: 361px;
+	horizontal-align: center;
+	vertical-align: center;
+	overflow: noclip;
+	transform-origin: 50% 50%;
+	transform: rotateX(0deg) rotateY(0deg);
+	brightness: 1;
+	transition-property: transform, brightness;
+	transition-duration: 0.16s;
+	transition-timing-function: cubic-bezier(0.16, 0.72, 0.24, 1.0);
+	transition-high-framerate: true;
+}
+
+.hover3d-card-surface
+{
+	width: 240px;
+	height: 329px;
+	horizontal-align: center;
+	vertical-align: center;
+	overflow: noclip;
+	transform-origin: 50% 50%;
+	transform: scaleX(1) scaleY(1);
+	transition-property: transform;
+	transition-duration: 0.18s;
+	transition-timing-function: cubic-bezier(0.20, 0.75, 0.25, 1.0);
+	transition-high-framerate: true;
+}
+
+.hover3d-card-frame
+{
+	width: 100%;
+	height: 100%;
+	border-radius: 16px;
+	overflow: clip;
+}
+
+.hover3d-card-image
+{
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+}
+
+.hover3d-card-shine
+{
+	width: 180px;
+	height: 180px;
+	x: 30px;
+	y: 75px;
+	ignore-parent-flow: true;
+	background-color: gradient(radial, 50% 50%, 0% 0%, 50% 50%, from(rgba(255, 255, 255, 0.20)), color-stop(0.28, rgba(255, 255, 255, 0.10)), to(rgba(255, 255, 255, 0)));
+	opacity: 0;
+	z-index: 2;
+	transform: translate3d(0px, 0px, 0px);
+	transition-property: transform, opacity;
+	transition-duration: 0.18s;
+	transition-timing-function: ease-out;
+	transition-high-framerate: true;
+}
+
+.hover3d-tracker:hover .hover3d-card-content
+{
+	brightness: 1.03;
+}
+
+.hover3d-tracker:hover .hover3d-card-surface
+{
+	transform: scaleX(1.04) scaleY(1.04);
+	transition-duration: 0.28s;
+	transition-timing-function: cubic-bezier(0.18, 0.82, 0.28, 1.18);
+}
+
+.hover3d-tracker:hover .hover3d-card-shine
+{
+	opacity: 0.72;
+}
+
+.hover3d-direction-1:hover .hover3d-card-content
+{
+	transform: rotateX(-6deg) rotateY(6deg);
+}
+
+.hover3d-direction-2:hover .hover3d-card-content
+{
+	transform: rotateX(-8deg) rotateY(0deg);
+}
+
+.hover3d-direction-3:hover .hover3d-card-content
+{
+	transform: rotateX(-6deg) rotateY(-6deg);
+}
+
+.hover3d-direction-4:hover .hover3d-card-content
+{
+	transform: rotateX(0deg) rotateY(8deg);
+}
+
+.hover3d-direction-5:hover .hover3d-card-content
+{
+	transform: rotateX(0deg) rotateY(-8deg);
+}
+
+.hover3d-direction-6:hover .hover3d-card-content
+{
+	transform: rotateX(6deg) rotateY(6deg);
+}
+
+.hover3d-direction-7:hover .hover3d-card-content
+{
+	transform: rotateX(8deg) rotateY(0deg);
+}
+
+.hover3d-direction-8:hover .hover3d-card-content
+{
+	transform: rotateX(6deg) rotateY(-6deg);
+}
+
+.hover3d-direction-1:hover .hover3d-card-shine { transform: translate3d(-55px, -80px, 0px); }
+.hover3d-direction-2:hover .hover3d-card-shine { transform: translate3d(0px, -80px, 0px); }
+.hover3d-direction-3:hover .hover3d-card-shine { transform: translate3d(55px, -80px, 0px); }
+.hover3d-direction-4:hover .hover3d-card-shine { transform: translate3d(-55px, 0px, 0px); }
+.hover3d-direction-5:hover .hover3d-card-shine { transform: translate3d(55px, 0px, 0px); }
+.hover3d-direction-6:hover .hover3d-card-shine { transform: translate3d(-55px, 80px, 0px); }
+.hover3d-direction-7:hover .hover3d-card-shine { transform: translate3d(0px, 80px, 0px); }
+.hover3d-direction-8:hover .hover3d-card-shine { transform: translate3d(55px, 80px, 0px); }
 
 .swift-hud-header
 {

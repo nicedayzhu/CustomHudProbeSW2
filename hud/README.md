@@ -5,6 +5,10 @@ This directory owns the source layouts and shared stylesheet for `CustomHudProbe
 ```text
 layout/swift_menu_custom_hud.xml
 layout/cyber_card_custom_hud.xml
+layout/hover3d_gallery_custom_hud.xml
+images/hover3d/card_1.png + card_1.vtex
+images/hover3d/card_2.png + card_2.vtex
+images/hover3d/card_3.png + card_3.vtex
 styles/swift_menu_custom_hud.css
 ```
 
@@ -18,6 +22,16 @@ descendant of the complete chain. The deepest hovered tracker wins the CSS
 cascade and updates that same card panel, preserving the reference's 5-by-5
 cursor mapping and 125 ms transform interpolation without cloning or swapping
 the animated visual tree.
+
+The Hover 3D gallery adapts the
+[daisyUI Hover 3D Card](https://daisyui.com/components/hover-3d/) example to the
+same script-free Custom HUD constraints. Each image uses an eight-tracker
+nested chain around one shared content panel, corresponding to the original
+3-by-3 hover grid with its center omitted. The CSS applies directional tilt,
+shadow displacement, a small hover scale, and a moving radial shine to the
+shared panel. The three source images are the stock demo images linked by the
+daisyUI example, converted to local PNG/VTEX assets so the HUD has no runtime
+network dependency.
 
 Use the project-owned build entry point to validate, compile, pack, or install
 these resources:

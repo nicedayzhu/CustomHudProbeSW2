@@ -1,0 +1,118 @@
+<root>
+	<!--
+		Adapted from the daisyUI Hover 3D Card image gallery:
+		https://daisyui.com/components/hover-3d/
+		Images: https://img.daisyui.com/images/stock/card-{1,2,3}.webp
+	-->
+	<styles>
+		<include src="s2r://panorama/styles/custom_game/swift_menu_custom_hud.vcss_c" />
+	</styles>
+	<Panel class="swift-hud-root" hittest="false">
+		<Panel id="gallery_dialog" class="hover3d-gallery-dialog SwiftHudHidden" hittest="true">
+			<Panel class="hover3d-gallery" hittest="true">
+			<Panel class="hover3d-card-stage hover3d-card-stage-1" hittest="true">
+				<Panel id="Hover3DCard1Tracker1" class="hover3d-tracker hover3d-direction-1" hittest="false">
+					<Panel class="hover3d-sensor hover3d-zone-1" hittest="true" />
+					<Panel id="Hover3DCard1Tracker2" class="hover3d-tracker hover3d-direction-2" hittest="false">
+						<Panel class="hover3d-sensor hover3d-zone-2" hittest="true" />
+						<Panel id="Hover3DCard1Tracker3" class="hover3d-tracker hover3d-direction-3" hittest="false">
+							<Panel class="hover3d-sensor hover3d-zone-3" hittest="true" />
+							<Panel id="Hover3DCard1Tracker4" class="hover3d-tracker hover3d-direction-4" hittest="false">
+								<Panel class="hover3d-sensor hover3d-zone-4" hittest="true" />
+								<Panel id="Hover3DCard1Tracker5" class="hover3d-tracker hover3d-direction-5" hittest="false">
+									<Panel class="hover3d-sensor hover3d-zone-5" hittest="true" />
+									<Panel id="Hover3DCard1Tracker6" class="hover3d-tracker hover3d-direction-6" hittest="false">
+										<Panel class="hover3d-sensor hover3d-zone-6" hittest="true" />
+										<Panel id="Hover3DCard1Tracker7" class="hover3d-tracker hover3d-direction-7" hittest="false">
+											<Panel class="hover3d-sensor hover3d-zone-7" hittest="true" />
+											<Panel id="Hover3DCard1Tracker8" class="hover3d-tracker hover3d-direction-8" hittest="false">
+								<Panel class="hover3d-sensor hover3d-zone-8" hittest="true" />
+								<Panel id="Hover3DCard1Content" class="hover3d-card-content" hittest="false">
+									<Panel class="hover3d-card-surface" hittest="false">
+										<Panel class="hover3d-card-frame" hittest="false">
+											<Image class="hover3d-card-image" hittest="false" src="s2r://panorama/images/custom_game/hover3d/card_1.vtex" texturewidth="747" textureheight="1024" />
+											<Panel class="hover3d-card-shine" hittest="false" />
+										</Panel>
+									</Panel>
+								</Panel>
+											</Panel>
+										</Panel>
+									</Panel>
+								</Panel>
+							</Panel>
+						</Panel>
+					</Panel>
+				</Panel>
+			</Panel>
+			<Panel class="hover3d-card-stage hover3d-card-stage-2" hittest="true">
+				<Panel id="Hover3DCard2Tracker1" class="hover3d-tracker hover3d-direction-1" hittest="false">
+					<Panel class="hover3d-sensor hover3d-zone-1" hittest="true" />
+					<Panel id="Hover3DCard2Tracker2" class="hover3d-tracker hover3d-direction-2" hittest="false">
+						<Panel class="hover3d-sensor hover3d-zone-2" hittest="true" />
+						<Panel id="Hover3DCard2Tracker3" class="hover3d-tracker hover3d-direction-3" hittest="false">
+							<Panel class="hover3d-sensor hover3d-zone-3" hittest="true" />
+							<Panel id="Hover3DCard2Tracker4" class="hover3d-tracker hover3d-direction-4" hittest="false">
+								<Panel class="hover3d-sensor hover3d-zone-4" hittest="true" />
+								<Panel id="Hover3DCard2Tracker5" class="hover3d-tracker hover3d-direction-5" hittest="false">
+									<Panel class="hover3d-sensor hover3d-zone-5" hittest="true" />
+									<Panel id="Hover3DCard2Tracker6" class="hover3d-tracker hover3d-direction-6" hittest="false">
+										<Panel class="hover3d-sensor hover3d-zone-6" hittest="true" />
+										<Panel id="Hover3DCard2Tracker7" class="hover3d-tracker hover3d-direction-7" hittest="false">
+											<Panel class="hover3d-sensor hover3d-zone-7" hittest="true" />
+											<Panel id="Hover3DCard2Tracker8" class="hover3d-tracker hover3d-direction-8" hittest="false">
+								<Panel class="hover3d-sensor hover3d-zone-8" hittest="true" />
+								<Panel id="Hover3DCard2Content" class="hover3d-card-content" hittest="false">
+									<Panel class="hover3d-card-surface" hittest="false">
+										<Panel class="hover3d-card-frame" hittest="false">
+											<Image class="hover3d-card-image" hittest="false" src="s2r://panorama/images/custom_game/hover3d/card_2.vtex" texturewidth="747" textureheight="1024" />
+											<Panel class="hover3d-card-shine" hittest="false" />
+										</Panel>
+									</Panel>
+								</Panel>
+											</Panel>
+										</Panel>
+									</Panel>
+								</Panel>
+							</Panel>
+						</Panel>
+					</Panel>
+				</Panel>
+			</Panel>
+			<Panel class="hover3d-card-stage hover3d-card-stage-3" hittest="true">
+				<Panel id="Hover3DCard3Tracker1" class="hover3d-tracker hover3d-direction-1" hittest="false">
+					<Panel class="hover3d-sensor hover3d-zone-1" hittest="true" />
+					<Panel id="Hover3DCard3Tracker2" class="hover3d-tracker hover3d-direction-2" hittest="false">
+						<Panel class="hover3d-sensor hover3d-zone-2" hittest="true" />
+						<Panel id="Hover3DCard3Tracker3" class="hover3d-tracker hover3d-direction-3" hittest="false">
+							<Panel class="hover3d-sensor hover3d-zone-3" hittest="true" />
+							<Panel id="Hover3DCard3Tracker4" class="hover3d-tracker hover3d-direction-4" hittest="false">
+								<Panel class="hover3d-sensor hover3d-zone-4" hittest="true" />
+								<Panel id="Hover3DCard3Tracker5" class="hover3d-tracker hover3d-direction-5" hittest="false">
+									<Panel class="hover3d-sensor hover3d-zone-5" hittest="true" />
+									<Panel id="Hover3DCard3Tracker6" class="hover3d-tracker hover3d-direction-6" hittest="false">
+										<Panel class="hover3d-sensor hover3d-zone-6" hittest="true" />
+										<Panel id="Hover3DCard3Tracker7" class="hover3d-tracker hover3d-direction-7" hittest="false">
+											<Panel class="hover3d-sensor hover3d-zone-7" hittest="true" />
+											<Panel id="Hover3DCard3Tracker8" class="hover3d-tracker hover3d-direction-8" hittest="false">
+								<Panel class="hover3d-sensor hover3d-zone-8" hittest="true" />
+								<Panel id="Hover3DCard3Content" class="hover3d-card-content" hittest="false">
+									<Panel class="hover3d-card-surface" hittest="false">
+										<Panel class="hover3d-card-frame" hittest="false">
+											<Image class="hover3d-card-image" hittest="false" src="s2r://panorama/images/custom_game/hover3d/card_3.vtex" texturewidth="747" textureheight="1024" />
+											<Panel class="hover3d-card-shine" hittest="false" />
+										</Panel>
+									</Panel>
+								</Panel>
+											</Panel>
+										</Panel>
+									</Panel>
+								</Panel>
+							</Panel>
+						</Panel>
+					</Panel>
+				</Panel>
+			</Panel>
+			</Panel>
+		</Panel>
+	</Panel>
+</root>

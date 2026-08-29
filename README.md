@@ -14,6 +14,7 @@ server, with no Hammer workflow or pre-placed map entity.
 
 - `!chud_spawn menu` loads the button-menu layout into the single probe entity; omitting the argument defaults to `menu`.
 - `!chud_spawn card` switches the single probe entity to the standalone 3D-card layout.
+- `!chud_spawn gallery` switches to a three-image gallery with independent eight-zone 3D hover and moving shine effects.
 - `!chud_open` reopens the currently loaded HUD for the issuing player.
 - `!chud_close` hides the current HUD and releases the issuing player's input capture.
 - `!chud_status` reports the entity tracked by the plugin.
@@ -31,6 +32,11 @@ The original direction for native Custom HUD button handling was informed by
 [laper32/PanoramaLayout](https://github.com/laper32/PanoramaLayout), especially
 its `CS_UM_CustomHudClicked` receiver flow. Thank you to its author for
 publishing that work.
+
+The Hover 3D gallery is adapted from the
+[daisyUI Hover 3D Card example](https://daisyui.com/components/hover-3d/). Its
+three demo images are the stock `card-1.webp`, `card-2.webp`, and `card-3.webp`
+assets referenced by that example and converted locally to Panorama textures.
 
 ## Quick start: local override test
 
@@ -81,6 +87,7 @@ Then join the test server and use these chat commands:
 | --- | --- |
 | `!chud_spawn menu` | Loads the button menu into the single probe entity; omitting the argument defaults to `menu`. |
 | `!chud_spawn card` | Replaces the old mode and loads the standalone 3D card into the single probe entity. |
+| `!chud_spawn gallery` | Replaces the old mode and loads the three-image Hover 3D gallery. Aliases: `hover3d`, `images`. |
 | `!chud_open` | Reopens the current HUD for the invoking player; the probe must already exist. |
 | `!chud_close` | Hides the current HUD and releases the invoking player's input capture. |
 | `!chud_status` | Reports the bridge and probe entity state. |

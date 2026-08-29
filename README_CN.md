@@ -13,6 +13,7 @@
 
 - `!chud_spawn menu`：在唯一探针实体中加载并显示按钮菜单 layout；省略参数时默认使用 `menu`。
 - `!chud_spawn card`：切换唯一探针实体，加载独立 3D 卡片 layout。
+- `!chud_spawn gallery`：切换至三图片画廊，每张图片都有独立的八区 3D hover 与移动高光效果。
 - `!chud_open`：重新打开当前已加载的 HUD。
 - `!chud_close`：为发起命令的玩家隐藏当前 HUD 并释放输入捕获。
 - `!chud_status`：显示插件当前跟踪的实体。
@@ -26,6 +27,10 @@
 原生 Custom HUD 点击处理的最初实现思路参考了
 [laper32/PanoramaLayout](https://github.com/laper32/PanoramaLayout)，尤其是其通过
 `CS_UM_CustomHudClicked` 接收点击的流程。感谢作者公开分享这一实现。
+
+Hover 3D 画廊移植自
+[daisyUI Hover 3D Card 示例](https://daisyui.com/components/hover-3d/)。三张演示图片来自该示例引用的
+`card-1.webp`、`card-2.webp` 与 `card-3.webp` 素材，并已转换成本地 Panorama 纹理。
 
 ## 快速开始：本地 override 测试
 
@@ -72,6 +77,7 @@ sw plugins reload CustomHudProbeSW2
 | --- | --- |
 | `!chud_spawn menu` | 在唯一探针实体中加载按钮菜单；省略参数时默认使用 `menu`。 |
 | `!chud_spawn card` | 销毁旧模式并在唯一探针实体中加载独立 3D 卡片。 |
+| `!chud_spawn gallery` | 销毁旧模式并加载三图片 Hover 3D 画廊；别名为 `hover3d`、`images`。 |
 | `!chud_open` | 重新打开发起命令玩家的当前 HUD；探针必须已存在。 |
 | `!chud_close` | 隐藏发起命令玩家的当前 HUD并释放输入捕获。 |
 | `!chud_status` | 报告桥接层与探针实体状态。 |

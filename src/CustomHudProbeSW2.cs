@@ -9,7 +9,7 @@ namespace CustomHudProbeSW2;
 
 [PluginMetadata(
     Id = "CustomHudProbeSW2",
-    Version = "0.2.0",
+    Version = "0.3.0",
     Name = "Custom HUD Probe",
     Author = "Swift Menu PoC",
     Description = "Loads one of several CS2 custom_hud_layout resources into a single probe entity.",
@@ -20,10 +20,13 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
     private const string DesignerName = "custom_hud_layout";
     private const string MenuTargetName = "swift_menu_custom_hud";
     private const string CardTargetName = "swift_cyber_card_custom_hud";
+    private const string GalleryTargetName = "swift_hover3d_gallery_custom_hud";
     private const string MenuLayoutResource = "panorama/layout/custom_game/swift_menu_custom_hud.xml";
     private const string CardLayoutResource = "panorama/layout/custom_game/cyber_card_custom_hud.xml";
+    private const string GalleryLayoutResource = "panorama/layout/custom_game/hover3d_gallery_custom_hud.xml";
     private const string MenuDialogPanelId = "dialog";
     private const string CardDialogPanelId = "card_dialog";
+    private const string GalleryDialogPanelId = "gallery_dialog";
     private const string HiddenClass = "SwiftHudHidden";
     private const string AccentClass = "SwiftHudAccent";
 
@@ -44,7 +47,7 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
                 Logger.LogError(exception, "[CustomHudProbeSW2] Custom HUD click bridge callback failed."));
 
             Logger.LogInformation(
-                "[CustomHudProbeSW2] Native Custom HUD bridge ready (hotReload={HotReload}). Use !chud_spawn <menu|card>.",
+                "[CustomHudProbeSW2] Native Custom HUD bridge ready (hotReload={HotReload}). Use !chud_spawn <menu|card|gallery>.",
                 hotReload);
         }
         catch (Exception exception)
@@ -65,13 +68,13 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
         Logger.LogInformation("[CustomHudProbeSW2] Unloaded.");
     }
 
-    [Command("chud_spawn", registerRaw: true, helpText: "Load one Custom HUD layout: chud_spawn <menu|card>.")]
+    [Command("chud_spawn", registerRaw: true, helpText: "Load one Custom HUD layout: chud_spawn <menu|card|gallery>.")]
     public void SpawnCommand(ICommandContext context)
     {
         var modeText = context.Args.Length > 0 ? context.Args[0] : "menu";
         if (!TryParseMode(modeText, out var requestedMode))
         {
-            context.Reply("[CustomHudProbeSW2] Usage: !chud_spawn <menu|card>.");
+            context.Reply("[CustomHudProbeSW2] Usage: !chud_spawn <menu|card|gallery>.");
             return;
         }
 
@@ -107,7 +110,7 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
 
             var openedHuds = OpenHudForConnectedPlayers();
             context.Reply($"[CustomHudProbeSW2] Loaded {ModeName(requestedMode)} in entity #{entity.Index}: {spec.LayoutResource}; opened {openedHuds} HUD(s).");
-            context.Reply("[CustomHudProbeSW2] Switch with !chud_spawn menu or !chud_spawn card; only one probe entity is kept alive.");
+            context.Reply("[CustomHudProbeSW2] Switch with !chud_spawn menu, !chud_spawn card, or !chud_spawn gallery; only one probe entity is kept alive.");
             Logger.LogInformation(
                 "[CustomHudProbeSW2] Loaded mode={Mode} entity={EntityIndex} target={TargetName} layout={LayoutResource}; opened={OpenedHuds}.",
                 ModeName(requestedMode),
@@ -136,7 +139,7 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
 
         if (!TryGetLayoutAddress(out _) || _activeMode == HudMode.None)
         {
-            context.Reply("[CustomHudProbeSW2] The probe is inactive. Use !chud_spawn <menu|card> first.");
+            context.Reply("[CustomHudProbeSW2] The probe is inactive. Use !chud_spawn <menu|card|gallery> first.");
             return;
         }
 
@@ -187,7 +190,7 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
             return;
         }
 
-        context.Reply("[CustomHudProbeSW2] Probe inactive. Use !chud_spawn <menu|card>.");
+        context.Reply("[CustomHudProbeSW2] Probe inactive. Use !chud_spawn <menu|card|gallery>.");
     }
 
     private int OpenHudForConnectedPlayers()
@@ -368,6 +371,11 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
             case "cyber":
                 mode = HudMode.Card;
                 return true;
+            case "gallery":
+            case "hover3d":
+            case "images":
+                mode = HudMode.Gallery;
+                return true;
             default:
                 mode = HudMode.None;
                 return false;
@@ -378,6 +386,7 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
     {
         HudMode.Menu => new LayoutSpec(MenuTargetName, MenuLayoutResource, MenuDialogPanelId),
         HudMode.Card => new LayoutSpec(CardTargetName, CardLayoutResource, CardDialogPanelId),
+        HudMode.Gallery => new LayoutSpec(GalleryTargetName, GalleryLayoutResource, GalleryDialogPanelId),
         _ => throw new InvalidOperationException("No Custom HUD layout is active.")
     };
 
@@ -385,6 +394,7 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
     {
         HudMode.Menu => "menu",
         HudMode.Card => "card",
+        HudMode.Gallery => "gallery",
         _ => "none"
     };
 
@@ -392,7 +402,8 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
     {
         None,
         Menu,
-        Card
+        Card,
+        Gallery
     }
 
     private readonly record struct LayoutSpec(string TargetName, string LayoutResource, string DialogPanelId);
