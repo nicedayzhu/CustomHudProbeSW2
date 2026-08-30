@@ -1,26 +1,31 @@
 {
-    // server.dll SHA-256: f1ad7d0616f7144a0cb4808919e711c0893ad1eb9a7df9effcefe9e7c8948197
-    // IDA image base: 0x180000000, verified 2026-08-27.
-    // Each Windows pattern has exactly one match in that module. Relative call
+    // Windows patterns: server.dll SHA-256 f1ad7d0616f7144a0cb4808919e711c0893ad1eb9a7df9effcefe9e7c8948197
+    //   IDA image base: 0x180000000, verified 2026-08-27.
+    // Linux patterns: libserver.so SHA-256 8baaf57b1339fc9e0a6a47d0d823651345198429766a08f0e27c8ebc17771b17
+    //   ELF (stripped), verified 2026-08-30 with IDA 9.3 decompiler against the script-binding
+    //   thunks of the "CustomHudLayout" API. Receiver = the "OnCustomHudClicked" event
+    //   dispatcher (binding, playerController, layout, buttonId).
+    // Each Windows pattern has exactly one match in server.dll; each Linux pattern has exactly
+    // one match in libserver.so .text. Relative call/jmp displacements and rip-relative
     // displacements are wildcards because they are not stable across builds.
     "CustomHudProbeSW2::SetDialogVariableStringForPlayer": {
         "lib": "server",
         "windows": "40 53 56 57 48 83 EC 20 48 63 DA 49 8B F1 49 8B C0 48 8B F9 3B 99 B0 04 00 00 7D ? 48 89 6C 24 50 4C 8D 44 24 40 33 ED 48 8B D0 66 89 6C 24 40 E8 ? ? ? ? 84 C0 74 ? 4C 8D 44 24 48 66 89 6C 24 48 48 8B D6 48 8B CF E8 ? ? ? ? 84 C0 74 ? 4C 8B 4C 24 60 44 0F B7 44 24 48 0F B7 54 24 40 48 69 CB 98 01 00 00 48 03 8F B8 04 00 00",
-        "linux": ""
+        "linux": "55 48 89 E5 41 56 41 55 41 54 41 89 F4 53 48 83 EC 10 3B B7 90 07 00 00 7C ? 48 83 C4 10 5B 41 5C 41 5D 41 5E 5D C3 66 0F 1F 84 00 00 00 00 00 48 89 D6 31 D2 48 89 FB 66 89 55 DC 48 8D 55 DC 49 89 CD 4D 89 C6 E8 ? ? ? ? 84 C0 74 ? 31 C0 4C 89 EE 48 89 DF"
     },
     "CustomHudProbeSW2::SetHasClassForPlayer": {
         "lib": "server",
         "windows": "40 53 56 57 48 83 EC 20 48 63 DA 49 8B F1 49 8B C0 48 8B F9 3B 99 B0 04 00 00 7D ? 48 89 6C 24 50 4C 8D 44 24 40 33 ED 48 8B D0 66 89 6C 24 40 E8 ? ? ? ? 84 C0 74 ? 4C 8D 44 24 48 66 89 6C 24 48 48 8B D6 48 8B CF E8 ? ? ? ? 84 C0 74 ? 44 8B 4C 24 60 44 0F B7 44 24 48 0F B7 54 24 40 48 69 CB 98 01 00 00 48 03 8F B8 04 00 00",
-        "linux": ""
+        "linux": "55 48 89 E5 41 56 41 55 41 54 41 89 F4 53 48 83 EC 10 3B B7 90 07 00 00 7C ? 48 83 C4 10 5B 41 5C 41 5D 41 5E 5D C3 66 0F 1F 84 00 00 00 00 00 48 89 D6 31 D2 48 89 FB 66 89 55 DC 48 8D 55 DC 49 89 CD 45 89 C6 E8 ? ? ? ? 84 C0 74 ? 31 C0 4C 89 EE 48 89 DF"
     },
     "CustomHudProbeSW2::SetInputCaptureEnabled": {
         "lib": "server",
         "windows": "40 57 48 83 EC 20 41 0F B6 F8 3B 91 B0 04 00 00 7D ? 48 89 5C 24 30 48 63 C2 48 69 D8 98 01 00 00 48 03 99 B8 04 00 00 44 38 43 34 74 ? BA FF FF FF FF 48 8D 4B 34 41 B8 FF FF FF FF E8 ? ? ? ? 40 88 7B 34 48 8B 5C 24 30 48 83 C4 20 5F C3",
-        "linux": ""
+        "linux": "3B B7 90 07 00 00 0F ? ? ? ? ? 55 48 89 E5 41 55 41 54 41 89 D4 53 48 63 DE 48 69 DB 98 01 00 00 48 83 EC 48 48 03 9F 98 07 00 00 3A 53 34 75 ? 48 83 C4 48 5B 41 5C 41 5D 5D C3 0F 1F 00 48 8D 7D B0 31 C0 66 0F EF C0 BE 01 00 00 00 0F 29 45 C0 4C 8D 6D A0"
     },
     "CustomHudProbeSW2::CustomHudClickedReceiver": {
         "lib": "server",
         "windows": "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 20 48 8B 1D ? ? ? ? 49 8B F9 49 8B F0 48 8B EA 48 85 DB 74 ? 0F 1F 80 00 00 00 00 48 8B 03 4C 8B CF 4C 8B C6 48 8B D5 48 8B CB FF 90 10 01 00 00",
-        "linux": ""
+        "linux": "55 48 89 E5 41 57 41 56 49 89 CE 41 55 49 89 F5 41 54 49 89 D4 53 48 89 FB 48 83 EC 68 0F B6 05 ? ? ? ? 84 C0 0F ? ? ? ? ? 80 7B 30 00 75 ? 48 83 C4 68 5B 41 5C 41 5D 41 5E 41 5F 5D C3 0F 1F 80 00 00 00 00 4C 8B 3D ? ? ? ? 48 8D 45 B0 48 89 DF"
     }
 }
