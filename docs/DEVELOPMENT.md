@@ -65,8 +65,8 @@ This creates the uploadable Addon `swift_custom_hud_layout_probe` and the local
 VPK at `dist\swift_custom_hud_layout_probe.vpk`. Workshop Manager consumes the
 compiled Addon output; it does not compile raw Panorama sources for you.
 
-`Validate` checks the layout, stylesheet, plugin integration contract, and required
-GameData entries without compiling. `Compile` only runs ResourceCompiler, `Pack`
+`Validate` checks the layout, stylesheet, and official SwiftlyS2 Custom HUD API
+integration without compiling. `Compile` only runs ResourceCompiler, `Pack`
 only writes the VPK from a compiled Addon, and `Build` runs `Compile` then `Pack`.
 The default `-Cs2Root` and `-VpkEditCli` values are developer-machine paths, so
 pass the paths above on another machine. Use `-AddonName` only when intentionally
@@ -222,12 +222,8 @@ Use these commands in player chat after the plugin has loaded:
 | `!chud_spawn flip` | Loads the two-sided flip card. Aliases: `flipcard`, `turn`. |
 | `!chud_open` | Reopens the current HUD for the player who issues it. The probe must already be active. |
 | `!chud_close` | Hides the current HUD and releases input capture for the issuing player. |
-| `!chud_status` | Reports whether the native bridge is ready and whether a probe is active. |
+| `!chud_status` | Reports the active layout and whether a probe is active. |
 | `!chud_clear` | Removes the active probe and releases its captured input. |
-
-If `!chud_spawn` reports that the native bridge is unavailable, inspect the server
-log before troubleshooting the resource VPK: the plugin intentionally refuses to
-spawn on an unverified `server.dll` build.
 
 ## Test after publishing
 
@@ -249,11 +245,7 @@ available to both server and client, then preserve the output of
 `custom_hud_layout` is newly introduced and experimental. The local VPK path and
 the Workshop Manager preview are verified, but an actual Workshop upload should be
 tested separately for subscription download, server resource delivery, and future
-CS2 updates. Per-player dialog state, input capture, and button callbacks resolve
-their build-specific addresses through
-`resources/gamedata/signatures.jsonc`. If startup logging or `!chud_status`
-reports that the native bridge is unavailable after a CS2 update, do not use the
-old signatures on a new build. Revalidate all four signatures against that
-server's `server.dll`, update the GameData file, run `-Action Validate`, deploy,
-and reload the plugin. A verified signature-only update does not require changing
-C#.
+CS2 updates. Per-player dialog state, input capture, and button callbacks use the
+official Custom HUD API in stable SwiftlyS2 1.4.8. After a CS2 update, update the
+SwiftlyS2 runtime when its maintainers publish compatibility fixes; this plugin no
+longer carries or validates private `server.dll` signatures.

@@ -18,12 +18,6 @@ The following references are licensed under the MIT License. Their copyright
 notices are retained here, and the common MIT permission and warranty text is
 reproduced at the end of this file.
 
-### PanoramaLayout
-
-- Source: [laper32/PanoramaLayout](https://github.com/laper32/PanoramaLayout)
-- Use: implementation reference for the native `CS_UM_CustomHudClicked` receiver flow
-- Copyright: `Copyright (c) 2026 laper32`
-
 ### Uiverse Cyber Card
 
 - Source: [`cowardly-eagle-56` by `00Kubi`](https://uiverse.io/00Kubi/cowardly-eagle-56)

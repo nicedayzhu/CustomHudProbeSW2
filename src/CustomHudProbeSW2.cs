@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Commands;
-using SwiftlyS2.Shared.EntitySystem;
+using SwiftlyS2.Shared.Events;
 using SwiftlyS2.Shared.Plugins;
 using SwiftlyS2.Shared.SchemaDefinitions;
 
@@ -9,19 +9,14 @@ namespace CustomHudProbeSW2;
 
 [PluginMetadata(
     Id = "CustomHudProbeSW2",
-    Version = "0.4.0",
+    Version = "0.5.0",
     Name = "Custom HUD Probe",
     Author = "Swift Menu PoC",
     Description = "Loads one of several CS2 custom_hud_layout resources into a single probe entity.",
-    MinimumAPIVersion = "1.2.0"
+    MinimumAPIVersion = "1.4.8"
 )]
 public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
 {
-    private const string DesignerName = "custom_hud_layout";
-    private const string MenuTargetName = "swift_menu_custom_hud";
-    private const string CardTargetName = "swift_cyber_card_custom_hud";
-    private const string GalleryTargetName = "swift_hover3d_gallery_custom_hud";
-    private const string FlipTargetName = "swift_flip_card_custom_hud";
     private const string MenuLayoutResource = "panorama/layout/custom_game/swift_menu_custom_hud.xml";
     private const string CardLayoutResource = "panorama/layout/custom_game/cyber_card_custom_hud.xml";
     private const string GalleryLayoutResource = "panorama/layout/custom_game/hover3d_gallery_custom_hud.xml";
@@ -36,38 +31,24 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
     private readonly HashSet<int> _inputCapturedSlots = [];
 
     private CCSCustomHudLayout? _layoutEntity;
-    private CustomHudNativeBridge? _nativeHud;
     private HudMode _activeMode;
 
     private ILogger<CustomHudProbeSW2> Logger => Core.LoggerFactory.CreateLogger<CustomHudProbeSW2>();
 
     public override void Load(bool hotReload)
     {
-        try
-        {
-            _nativeHud = CustomHudNativeBridge.Create(Core.GameData, Core.Memory);
-            _nativeHud.HookCustomHudClicks(OnNativeCustomHudClicked, exception =>
-                Logger.LogError(exception, "[CustomHudProbeSW2] Custom HUD click bridge callback failed."));
-
-            Logger.LogInformation(
-                "[CustomHudProbeSW2] Native Custom HUD bridge ready (hotReload={HotReload}). Use !chud_spawn <menu|card|gallery|flip>.",
-                hotReload);
-        }
-        catch (Exception exception)
-        {
-            _nativeHud?.Dispose();
-            _nativeHud = null;
-            Logger.LogError(
-                exception,
-                "[CustomHudProbeSW2] Signature bridge is unavailable. The plugin will not spawn a HUD on an unverified server.dll build.");
-        }
+        Core.Event.OnCustomHudClicked += OnCustomHudClicked;
+        Core.Event.OnClientDisconnected += OnClientDisconnected;
+        Logger.LogInformation(
+            "[CustomHudProbeSW2] SwiftlyS2 Custom HUD API ready (hotReload={HotReload}). Use !chud_spawn <menu|card|gallery|flip>.",
+            hotReload);
     }
 
     public override void Unload()
     {
+        Core.Event.OnCustomHudClicked -= OnCustomHudClicked;
+        Core.Event.OnClientDisconnected -= OnClientDisconnected;
         ClearLayout("plugin unload");
-        _nativeHud?.Dispose();
-        _nativeHud = null;
         Logger.LogInformation("[CustomHudProbeSW2] Unloaded.");
     }
 
@@ -78,12 +59,6 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
         if (!TryParseMode(modeText, out var requestedMode))
         {
             context.Reply("[CustomHudProbeSW2] Usage: !chud_spawn <menu|card|gallery|flip>.");
-            return;
-        }
-
-        if (_nativeHud is null)
-        {
-            context.Reply("[CustomHudProbeSW2] Native Custom HUD bridge is unavailable; verify the server.dll build and server log.");
             return;
         }
 
@@ -102,12 +77,10 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
         var spec = GetLayoutSpec(requestedMode);
         try
         {
-            using var keyValues = new CEntityKeyValues();
-            keyValues.SetString("targetname", spec.TargetName);
-            keyValues.SetString("layout", spec.LayoutResource);
-
-            var entity = Core.EntitySystem.CreateEntityByDesignerName<CCSCustomHudLayout>(DesignerName, -1);
-            entity.DispatchSpawn(keyValues);
+            var entity = Core.EntitySystem.CreateEntity<CCSCustomHudLayout>();
+            entity.StrLayout = spec.LayoutResource;
+            entity.StrLayoutUpdated();
+            entity.DispatchSpawn();
             _layoutEntity = entity;
             _activeMode = requestedMode;
 
@@ -115,10 +88,9 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
             context.Reply($"[CustomHudProbeSW2] Loaded {ModeName(requestedMode)} in entity #{entity.Index}: {spec.LayoutResource}; opened {openedHuds} HUD(s).");
             context.Reply("[CustomHudProbeSW2] Switch with !chud_spawn menu, !chud_spawn card, !chud_spawn gallery, or !chud_spawn flip; only one probe entity is kept alive.");
             Logger.LogInformation(
-                "[CustomHudProbeSW2] Loaded mode={Mode} entity={EntityIndex} target={TargetName} layout={LayoutResource}; opened={OpenedHuds}.",
+                "[CustomHudProbeSW2] Loaded mode={Mode} entity={EntityIndex} layout={LayoutResource}; opened={OpenedHuds}.",
                 ModeName(requestedMode),
                 entity.Index,
-                spec.TargetName,
                 spec.LayoutResource,
                 openedHuds);
         }
@@ -140,7 +112,7 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
             return;
         }
 
-        if (!TryGetLayoutAddress(out _) || _activeMode == HudMode.None)
+        if (!TryGetLayout(out _) || _activeMode == HudMode.None)
         {
             context.Reply("[CustomHudProbeSW2] The probe is inactive. Use !chud_spawn <menu|card|gallery|flip> first.");
             return;
@@ -180,12 +152,6 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
     [Command("chud_status", registerRaw: true, helpText: "Show the active Custom HUD layout and entity state.")]
     public void StatusCommand(ICommandContext context)
     {
-        if (_nativeHud is null)
-        {
-            context.Reply("[CustomHudProbeSW2] Native Custom HUD bridge unavailable; the server.dll build did not pass the signature contract.");
-            return;
-        }
-
         if (_layoutEntity is { IsValid: true } entity && _activeMode != HudMode.None)
         {
             var spec = GetLayoutSpec(_activeMode);
@@ -215,7 +181,7 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
 
     private void OpenHud(int playerSlot)
     {
-        if (!TryGetLayoutAddress(out var layoutAddress) || _nativeHud is null || _activeMode == HudMode.None)
+        if (!TryGetLayout(out var layout) || _activeMode == HudMode.None)
         {
             return;
         }
@@ -223,24 +189,23 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
         var spec = GetLayoutSpec(_activeMode);
         if (_activeMode == HudMode.Menu)
         {
-            SetDialogValue(playerSlot, layoutAddress, "kicker", "SWIFT MENU / CUSTOM HUD");
-            SetDialogValue(playerSlot, layoutAddress, "title", "Custom HUD validation");
-            SetDialogValue(playerSlot, layoutAddress, "status", "Click a button to verify the native server callback.");
-            SetDialogValue(playerSlot, layoutAddress, "primary-action", "Primary action");
-            SetDialogValue(playerSlot, layoutAddress, "secondary-action", "Toggle accent");
-            SetDialogValue(playerSlot, layoutAddress, "close-action", "Close");
-            _nativeHud.SetHasClassForPlayer(layoutAddress, playerSlot, spec.DialogPanelId, AccentClass, false);
+            SetDialogValue(playerSlot, layout, "kicker", "SWIFT MENU / CUSTOM HUD");
+            SetDialogValue(playerSlot, layout, "title", "Custom HUD validation");
+            SetDialogValue(playerSlot, layout, "status", "Click a button to verify the SwiftlyS2 server callback.");
+            SetDialogValue(playerSlot, layout, "primary-action", "Primary action");
+            SetDialogValue(playerSlot, layout, "secondary-action", "Toggle accent");
+            SetDialogValue(playerSlot, layout, "close-action", "Close");
+            SetClassForPlayer(layout, playerSlot, spec.DialogPanelId, AccentClass, false);
         }
 
-        _nativeHud.SetHasClassForPlayer(layoutAddress, playerSlot, spec.DialogPanelId, HiddenClass, false);
-        _nativeHud.SetInputCaptureEnabled(layoutAddress, playerSlot, true);
+        SetClassForPlayer(layout, playerSlot, spec.DialogPanelId, HiddenClass, false);
+        layout.SetInputCaptureEnabledForPlayer(playerSlot, true);
         _inputCapturedSlots.Add(playerSlot);
     }
 
     private bool CloseHud(int playerSlot)
     {
-        if (!TryGetLayoutAddress(out var layoutAddress) ||
-            _nativeHud is null ||
+        if (!TryGetLayout(out var layout) ||
             _activeMode == HudMode.None ||
             !_inputCapturedSlots.Remove(playerSlot))
         {
@@ -248,71 +213,86 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
         }
 
         var spec = GetLayoutSpec(_activeMode);
-        _nativeHud.SetInputCaptureEnabled(layoutAddress, playerSlot, false);
-        _nativeHud.SetHasClassForPlayer(layoutAddress, playerSlot, spec.DialogPanelId, HiddenClass, true);
+        layout.SetInputCaptureEnabledForPlayer(playerSlot, false);
+        SetClassForPlayer(layout, playerSlot, spec.DialogPanelId, HiddenClass, true);
         if (_activeMode == HudMode.Menu)
         {
-            _nativeHud.SetHasClassForPlayer(layoutAddress, playerSlot, spec.DialogPanelId, AccentClass, false);
+            SetClassForPlayer(layout, playerSlot, spec.DialogPanelId, AccentClass, false);
         }
 
         return true;
     }
 
-    private void OnNativeCustomHudClicked(nint playerControllerAddress, nint layoutAddress, string buttonId)
+    private void OnClientDisconnected(IOnClientDisconnectedEvent @event)
     {
-        Core.Scheduler.NextWorldUpdate(() =>
-            ProcessNativeCustomHudClick(playerControllerAddress, layoutAddress, buttonId));
+        if (_inputCapturedSlots.Contains(@event.PlayerId))
+        {
+            _ = CloseHud(@event.PlayerId);
+        }
     }
 
-    private void ProcessNativeCustomHudClick(nint playerControllerAddress, nint layoutAddress, string buttonId)
+    private void OnCustomHudClicked(IOnCustomHudClickedEvent @event)
     {
         if (_activeMode != HudMode.Menu ||
-            !TryGetLayoutAddress(out var expectedLayoutAddress) ||
-            layoutAddress != expectedLayoutAddress)
+            !TryGetLayout(out var layout) ||
+            @event.CustomHudLayout.Address != layout.Address)
         {
             return;
         }
 
-        var player = Core.PlayerManager.GetAllPlayers().FirstOrDefault(candidate =>
-            candidate.IsValid &&
-            candidate.Controller is { IsValid: true } controller &&
-            controller.Address == playerControllerAddress);
-        if (player is null || !_inputCapturedSlots.Contains(player.Slot) || _nativeHud is null)
+        var player = Core.PlayerManager.GetPlayer(@event.PlayerId);
+        if (player?.IsValid != true ||
+            player.Controller?.IsValid != true ||
+            !_inputCapturedSlots.Contains(@event.PlayerId))
         {
             return;
         }
 
-        switch (buttonId)
+        switch (@event.ButtonId)
         {
             case "swift_menu_primary":
-                SetDialogValue(player.Slot, expectedLayoutAddress, "status", "Primary callback reached the server.");
+                SetDialogValue(@event.PlayerId, layout, "status", "Primary callback reached the server.");
                 break;
             case "swift_menu_secondary":
-                _nativeHud.SetHasClassForPlayer(expectedLayoutAddress, player.Slot, MenuDialogPanelId, AccentClass, true);
-                SetDialogValue(player.Slot, expectedLayoutAddress, "status", "Per-player CSS class update applied.");
+                SetClassForPlayer(layout, @event.PlayerId, MenuDialogPanelId, AccentClass, true);
+                SetDialogValue(@event.PlayerId, layout, "status", "Per-player CSS class update applied.");
                 break;
             case "swift_menu_close":
-                _ = CloseHud(player.Slot);
+                _ = CloseHud(@event.PlayerId);
                 break;
             default:
                 return;
         }
 
-        Logger.LogInformation("[CustomHudProbeSW2] Custom HUD click: slot={PlayerSlot}, button={ButtonId}.", player.Slot, buttonId);
+        Logger.LogInformation("[CustomHudProbeSW2] Custom HUD click: slot={PlayerSlot}, button={ButtonId}.", @event.PlayerId, @event.ButtonId);
     }
 
-    private void SetDialogValue(int playerSlot, nint layoutAddress, string variableName, string value) =>
-        _nativeHud!.SetDialogVariableStringForPlayer(layoutAddress, playerSlot, MenuDialogPanelId, variableName, value);
+    private static void SetDialogValue(int playerSlot, CCSCustomHudLayout layout, string variableName, string value) =>
+        layout.SetDialogVariableStringForPlayer(playerSlot, MenuDialogPanelId, variableName, value);
 
-    private bool TryGetLayoutAddress(out nint layoutAddress)
+    private static void SetClassForPlayer(
+        CCSCustomHudLayout layout,
+        int playerSlot,
+        string panelId,
+        string className,
+        bool hasClass) =>
+        layout.SetHasClassForPlayer(
+            playerSlot,
+            panelId,
+            className,
+            hasClass
+                ? EHudPanelClassStatus_t.k_eHudPanelClassStatus_HasClass
+                : EHudPanelClassStatus_t.k_eHudPanelClassStatus_DoesNotHaveClass);
+
+    private bool TryGetLayout(out CCSCustomHudLayout layout)
     {
-        if (_layoutEntity is { IsValid: true } layout)
+        if (_layoutEntity is { IsValid: true } activeLayout)
         {
-            layoutAddress = layout.Address;
+            layout = activeLayout;
             return true;
         }
 
-        layoutAddress = nint.Zero;
+        layout = null!;
         return false;
     }
 
@@ -323,13 +303,13 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
         _layoutEntity = null;
         _activeMode = HudMode.None;
 
-        if (entity is { IsValid: true } && _nativeHud is not null)
+        if (entity is { IsValid: true })
         {
             foreach (var playerSlot in _inputCapturedSlots.ToArray())
             {
                 try
                 {
-                    _nativeHud.SetInputCaptureEnabled(entity.Address, playerSlot, false);
+                    entity.SetInputCaptureEnabledForPlayer(playerSlot, false);
                 }
                 catch (Exception exception)
                 {
@@ -392,10 +372,10 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
 
     private static LayoutSpec GetLayoutSpec(HudMode mode) => mode switch
     {
-        HudMode.Menu => new LayoutSpec(MenuTargetName, MenuLayoutResource, MenuDialogPanelId),
-        HudMode.Card => new LayoutSpec(CardTargetName, CardLayoutResource, CardDialogPanelId),
-        HudMode.Gallery => new LayoutSpec(GalleryTargetName, GalleryLayoutResource, GalleryDialogPanelId),
-        HudMode.Flip => new LayoutSpec(FlipTargetName, FlipLayoutResource, FlipDialogPanelId),
+        HudMode.Menu => new LayoutSpec(MenuLayoutResource, MenuDialogPanelId),
+        HudMode.Card => new LayoutSpec(CardLayoutResource, CardDialogPanelId),
+        HudMode.Gallery => new LayoutSpec(GalleryLayoutResource, GalleryDialogPanelId),
+        HudMode.Flip => new LayoutSpec(FlipLayoutResource, FlipDialogPanelId),
         _ => throw new InvalidOperationException("No Custom HUD layout is active.")
     };
 
@@ -417,5 +397,5 @@ public sealed class CustomHudProbeSW2(ISwiftlyCore core) : BasePlugin(core)
         Flip
     }
 
-    private readonly record struct LayoutSpec(string TargetName, string LayoutResource, string DialogPanelId);
+    private readonly record struct LayoutSpec(string LayoutResource, string DialogPanelId);
 }

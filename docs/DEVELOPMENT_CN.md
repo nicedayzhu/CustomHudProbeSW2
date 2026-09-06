@@ -61,7 +61,7 @@ $vpkEditCli = 'D:\Tools\VPKEdit\vpkeditcli.exe'
 `dist\swift_custom_hud_layout_probe.vpk` 写入本地 VPK。Workshop Manager 使用 Addon
 目录中的已编译输出，不会替你编译原始 Panorama 源文件。
 
-`Validate` 仅检查布局、样式、插件集成契约与必需的 GameData 项，不进行编译；`Compile`
+`Validate` 仅检查布局、样式与 SwiftlyS2 官方 Custom HUD API 集成，不进行编译；`Compile`
 只执行 ResourceCompiler，`Pack` 只从已编译 Addon 写入 VPK，`Build` 依次执行
 `Compile` 与 `Pack`。`-Cs2Root` 与 `-VpkEditCli` 的默认值是开发机路径，其他机器必须
 显式传入上述实际路径。仅在确实需要不同 Addon 名称时才使用 `-AddonName`。
@@ -202,11 +202,8 @@ sw_searchpath                // 列出当前挂载的 VPK 搜索路径
 | `!chud_spawn flip` | 加载双面翻转卡片；别名为 `flipcard`、`turn`。 |
 | `!chud_open` | 为发起命令的玩家重新打开当前 HUD；探针必须已激活。 |
 | `!chud_close` | 隐藏发起命令玩家的当前 HUD，并释放输入捕获。 |
-| `!chud_status` | 报告原生桥接层是否就绪，以及探针是否处于活动状态。 |
+| `!chud_status` | 报告当前 layout 以及探针是否处于活动状态。 |
 | `!chud_clear` | 移除活动探针，并释放已捕获的输入。 |
-
-如果 `!chud_spawn` 提示原生桥接层不可用，先检查服务器日志，而不要先排查资源 VPK：插件会在
-`server.dll` 构建未经验证时拒绝创建 HUD。
 
 ## 发布后的测试
 
@@ -224,7 +221,5 @@ sw_searchpath                // 列出当前挂载的 VPK 搜索路径
 
 `custom_hud_layout` 是新引入的实验性功能。本地 VPK 路径及 Workshop Manager 内容预览已经
 验证，但真实上传后仍应单独验证订阅下载、服务器资源分发和未来 CS2 更新。每玩家对话状态、
-输入捕获与按钮回调通过 `resources/gamedata/signatures.jsonc` 解析构建相关地址。若 CS2 更新后，
-启动日志或 `!chud_status` 报告原生桥接层不可用，不要将旧特征码继续用于新版本：应针对该服务器的
-`server.dll` 重新验证全部四个特征码，更新 GameData 文件，运行 `-Action Validate`，再部署并重载
-插件。经验证的纯特征码更新不需要修改 C#。
+输入捕获与按钮回调均使用稳定版 SwiftlyS2 1.4.8 提供的官方 Custom HUD API。CS2 更新后若
+SwiftlyS2 发布兼容性修复，应更新服务器框架；本插件不再携带或验证私有 `server.dll` signature。

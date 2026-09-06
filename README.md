@@ -23,18 +23,14 @@ server, with no Hammer workflow or pre-placed map entity.
 - `!chud_status` reports the entity tracked by the plugin.
 - `!chud_clear` removes the HUD probe.
 - The client resolves and displays the HUD resources delivered by the resource VPK.
-- The native `CustomHudClickedReceiver` routes the three button IDs to the
+- SwiftlyS2's `Core.Event.OnCustomHudClicked` routes the three button IDs to the
   owning player's menu: primary updates its status, secondary applies its accent,
   and close releases its input capture and collapses the panel.
-- The native bridge resolves its four build-specific addresses through the
-  plugin's `resources/gamedata/signatures.jsonc`, not hard-coded C# patterns.
+- Per-player dialog variables, CSS classes, and input capture use the stable
+  `CCSCustomHudLayout` API provided by SwiftlyS2; the plugin has no private
+  `server.dll` signatures or unmanaged bridge.
 
 ## Acknowledgements
-
-The original direction for native Custom HUD button handling was informed by
-[laper32/PanoramaLayout](https://github.com/laper32/PanoramaLayout), especially
-its `CS_UM_CustomHudClicked` receiver flow. Thank you to its author for
-publishing that work.
 
 The standalone Cyber Card is adapted from
 [Uiverse.io `cowardly-eagle-56` by `00Kubi`](https://uiverse.io/00Kubi/cowardly-eagle-56).
@@ -104,7 +100,7 @@ Then join the test server and use these chat commands:
 | `!chud_spawn flip` | Replaces the old mode and loads the two-sided flip card. Aliases: `flipcard`, `turn`. |
 | `!chud_open` | Reopens the current HUD for the invoking player; the probe must already exist. |
 | `!chud_close` | Hides the current HUD and releases the invoking player's input capture. |
-| `!chud_status` | Reports the bridge and probe entity state. |
+| `!chud_status` | Reports the active layout and probe entity state. |
 | `!chud_clear` | Removes the probe and releases its input capture. |
 
 Restart the local CS2 client/server after mounting a new override VPK. The local
@@ -128,10 +124,9 @@ and troubleshooting.
 
 ## Status
 
-The dynamic entity, resource path, per-player state, input capture, and native
-click receiver are implemented against SwiftlyS2 1.4.6-beta.8. A CS2 update
-requires the plugin GameData signatures to be revalidated before the HUD will
-spawn; a verified signature-only update does not require changing C#.
+The dynamic entity, resource path, per-player state, input capture, and button
+event are implemented with the official Custom HUD API in stable SwiftlyS2
+1.4.8. Signature maintenance is handled by SwiftlyS2 rather than this plugin.
 
 ## License
 

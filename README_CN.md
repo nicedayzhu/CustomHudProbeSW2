@@ -22,14 +22,12 @@
 - `!chud_status`：显示插件当前跟踪的实体。
 - `!chud_clear`：移除 HUD 探针。
 - 客户端能够解析并显示资源 VPK 提供的 HUD 资源。
-- 原生 `CustomHudClickedReceiver` 会将三个按钮 ID 路由到对应玩家的菜单：主按钮更新状态，
-  次按钮应用强调样式，关闭按钮释放输入捕获并折叠面板。
+- SwiftlyS2 的 `Core.Event.OnCustomHudClicked` 会将三个按钮 ID 路由到对应玩家的菜单：
+  主按钮更新状态，次按钮应用强调样式，关闭按钮释放输入捕获并折叠面板。
+- 每玩家对话变量、CSS class 与输入捕获均使用 SwiftlyS2 提供的稳定
+  `CCSCustomHudLayout` API；插件不再包含私有 `server.dll` signature 或非托管桥接层。
 
 ## 致谢
-
-原生 Custom HUD 点击处理的最初实现思路参考了
-[laper32/PanoramaLayout](https://github.com/laper32/PanoramaLayout)，尤其是其通过
-`CS_UM_CustomHudClicked` 接收点击的流程。感谢作者公开分享这一实现。
 
 独立赛博卡片移植自 Uiverse.io 用户 `00Kubi` 的
 [`cowardly-eagle-56` 示例](https://uiverse.io/00Kubi/cowardly-eagle-56)，其 HTML/CSS
@@ -92,7 +90,7 @@ sw plugins reload CustomHudProbeSW2
 | `!chud_spawn flip` | 销毁旧模式并加载双面翻转卡片；别名为 `flipcard`、`turn`。 |
 | `!chud_open` | 重新打开发起命令玩家的当前 HUD；探针必须已存在。 |
 | `!chud_close` | 隐藏发起命令玩家的当前 HUD并释放输入捕获。 |
-| `!chud_status` | 报告桥接层与探针实体状态。 |
+| `!chud_status` | 报告当前 layout 与探针实体状态。 |
 | `!chud_clear` | 移除探针并释放输入捕获。 |
 
 挂载新的 override VPK 后，需要重启本地 CS2 客户端/服务器。local override 仅用于开发；生产环境请使用下方的 Workshop 分发方式。
@@ -113,10 +111,9 @@ Workshop Addon，使服务器与玩家客户端取得 HUD 资源。配置和验�
 
 ## 当前状态
 
-动态实体、资源加载、每玩家状态、输入捕获和原生点击接收器均已实现，依赖 SwiftlyS2
-1.4.6-beta.8。桥接特征码统一放在插件的
-`resources/gamedata/signatures.jsonc`，不再硬编码于 C#；CS2 更新后必须重新验证该文件，
-否则 HUD 不会创建。
+动态实体、资源加载、每玩家状态、输入捕获与按钮事件均通过稳定版 SwiftlyS2 1.4.8
+提供的官方 Custom HUD API 实现。signature 维护由 SwiftlyS2 负责，本插件无需再随 CS2
+更新自行查找或维护 signature。
 
 ## 开源协议
 

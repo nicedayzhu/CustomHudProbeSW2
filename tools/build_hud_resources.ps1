@@ -22,8 +22,6 @@ $galleryImagePaths = @(1..3 | ForEach-Object { Join-Path $galleryImageRoot "card
 $galleryTexturePaths = @(1..3 | ForEach-Object { Join-Path $galleryImageRoot "card_$_.vtex" })
 $stylePath = Join-Path $sourceRoot "styles\swift_menu_custom_hud.css"
 $pluginPath = Join-Path $projectRoot "src\CustomHudProbeSW2.cs"
-$bridgePath = Join-Path $projectRoot "src\CustomHudNative.cs"
-$gameDataPath = Join-Path $projectRoot "resources\gamedata\signatures.jsonc"
 $distRoot = Join-Path $projectRoot "dist"
 $outVpk = Join-Path $distRoot "$AddonName.vpk"
 
@@ -88,7 +86,7 @@ function Write-TextNoBom {
 }
 
 function Test-HudSources {
-    $requiredSources = @($layoutPath, $cardLayoutPath, $galleryLayoutPath, $flipLayoutPath, $stylePath, $pluginPath, $bridgePath, $gameDataPath)
+    $requiredSources = @($layoutPath, $cardLayoutPath, $galleryLayoutPath, $flipLayoutPath, $stylePath, $pluginPath)
     $requiredSources += $galleryImagePaths
     $requiredSources += $galleryTexturePaths
     foreach ($path in $requiredSources) {
@@ -307,43 +305,39 @@ function Test-HudSources {
     }
 
     $pluginSource = Get-Content -Raw -LiteralPath $pluginPath
-    $bridgeSource = Get-Content -Raw -LiteralPath $bridgePath
-    foreach ($api in @("SetDialogVariableStringForPlayer", "SetHasClassForPlayer", "SetInputCaptureEnabled", "HookCustomHudClicks", "IGameDataService", "TryGetSignature")) {
-        if ($bridgeSource -notmatch [regex]::Escape($api)) {
-            throw "Custom HUD native bridge is missing: $api"
-        }
-    }
-    if ($bridgeSource -match [regex]::Escape("GetAddressBySignature")) {
-        throw "Custom HUD bridge must resolve signatures through SwiftlyS2 GameData, not IMemoryService."
-    }
-    $gameDataSource = Get-Content -Raw -LiteralPath $gameDataPath
-    foreach ($signatureName in @(
-        "CustomHudProbeSW2::SetDialogVariableStringForPlayer",
-        "CustomHudProbeSW2::SetHasClassForPlayer",
-        "CustomHudProbeSW2::SetInputCaptureEnabled",
-        "CustomHudProbeSW2::CustomHudClickedReceiver")) {
-        if ($gameDataSource -notmatch [regex]::Escape($signatureName)) {
-            throw "Custom HUD GameData is missing signature: $signatureName"
-        }
-    }
-    foreach ($api in @("OnNativeCustomHudClicked", "ProcessNativeCustomHudClick", "CreateEntityByDesignerName<CCSCustomHudLayout>")) {
+    foreach ($api in @(
+        "SetDialogVariableStringForPlayer",
+        "SetHasClassForPlayer",
+        "SetInputCaptureEnabledForPlayer",
+        "Core.Event.OnCustomHudClicked",
+        "IOnCustomHudClickedEvent",
+        "CreateEntity<CCSCustomHudLayout>",
+        "StrLayoutUpdated")) {
         if ($pluginSource -notmatch [regex]::Escape($api)) {
-            throw "Custom HUD probe does not use required native click API: $api"
+            throw "Custom HUD probe does not use required SwiftlyS2 Custom HUD API: $api"
         }
     }
-    foreach ($galleryBinding in @("GalleryTargetName", "GalleryLayoutResource", "GalleryDialogPanelId", "HudMode.Gallery", "<menu|card|gallery|flip>")) {
+    foreach ($galleryBinding in @("GalleryLayoutResource", "GalleryDialogPanelId", "HudMode.Gallery", "<menu|card|gallery|flip>")) {
         if ($pluginSource -notmatch [regex]::Escape($galleryBinding)) {
             throw "Custom HUD probe is missing Hover 3D gallery routing: $galleryBinding"
         }
     }
-    foreach ($flipBinding in @("FlipTargetName", "FlipLayoutResource", "FlipDialogPanelId", "HudMode.Flip", 'case "flip"')) {
+    foreach ($flipBinding in @("FlipLayoutResource", "FlipDialogPanelId", "HudMode.Flip", 'case "flip"')) {
         if ($pluginSource -notmatch [regex]::Escape($flipBinding)) {
             throw "Custom HUD probe is missing flip card routing: $flipBinding"
         }
     }
-    foreach ($forbiddenApi in @("CCSPointScriptEntity", "point_script", "cs_script", "OnCustomHudClicked")) {
-        if ($pluginSource -match [regex]::Escape($forbiddenApi) -or $bridgeSource -match [regex]::Escape($forbiddenApi)) {
-            throw "The native receiver implementation must not retain a CScript bridge: $forbiddenApi"
+    foreach ($forbiddenApi in @(
+        "CustomHudNativeBridge",
+        "IGameDataService",
+        "TryGetSignature",
+        "GetUnmanagedFunctionByAddress",
+        "CreateEntityByDesignerName<CCSCustomHudLayout>",
+        "CCSPointScriptEntity",
+        "point_script",
+        "cs_script")) {
+        if ($pluginSource -match [regex]::Escape($forbiddenApi)) {
+            throw "Custom HUD probe must use the SwiftlyS2 high-level API instead of a native/script bridge: $forbiddenApi"
         }
     }
 
